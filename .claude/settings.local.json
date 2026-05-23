@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//i/Descargas/**)",
+      "Bash(python3 -c ':*)",
+      "Bash(python:*)",
+      "Bash(ls -lh \"I:/Descargas/\"*.docx)",
+      "Bash(dir \"I:/Descargas/*.docx\")",
+      "Bash(powershell *)"
+    ]
+  }
+}

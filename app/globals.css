@@ -1,0 +1,262 @@
+/* ============================================
+   LectoRuta Saber - Tema Púrpura Educativo
+   Corporación Universitaria Antonio José de Sucre
+   ============================================ */
+
+@import 'tailwindcss';
+
+:root {
+  /* Purple educational theme - Light */
+  --background: oklch(0.97 0.01 285);
+  --foreground: oklch(0.18 0.04 285);
+  --card: oklch(0.99 0.005 285);
+  --card-foreground: oklch(0.18 0.04 285);
+  --popover: oklch(0.99 0.005 285);
+  --popover-foreground: oklch(0.18 0.04 285);
+  --primary: oklch(0.45 0.2 285);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.93 0.03 285);
+  --secondary-foreground: oklch(0.30 0.1 285);
+  --muted: oklch(0.94 0.02 285);
+  --muted-foreground: oklch(0.45 0.05 285);
+  --accent: oklch(0.92 0.04 285);
+  --accent-foreground: oklch(0.30 0.1 285);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.88 0.04 285);
+  --input: oklch(0.90 0.03 285);
+  --ring: oklch(0.55 0.2 285);
+  --chart-1: oklch(0.55 0.2 285);
+  --chart-2: oklch(0.6 0.15 180);
+  --chart-3: oklch(0.50 0.15 150);
+  --chart-4: oklch(0.70 0.15 85);
+  --chart-5: oklch(0.65 0.2 320);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.96 0.02 285);
+  --sidebar-foreground: oklch(0.18 0.04 285);
+  --sidebar-primary: oklch(0.45 0.2 285);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.93 0.03 285);
+  --sidebar-accent-foreground: oklch(0.30 0.1 285);
+  --sidebar-border: oklch(0.88 0.04 285);
+  --sidebar-ring: oklch(0.55 0.2 285);
+}
+
+.dark {
+  /* Purple educational theme - Dark */
+  --background: oklch(0.16 0.03 285);
+  --foreground: oklch(0.95 0.01 285);
+  --card: oklch(0.20 0.04 285);
+  --card-foreground: oklch(0.95 0.01 285);
+  --popover: oklch(0.20 0.04 285);
+  --popover-foreground: oklch(0.95 0.01 285);
+  --primary: oklch(0.70 0.18 285);
+  --primary-foreground: oklch(0.15 0.03 285);
+  --secondary: oklch(0.28 0.06 285);
+  --secondary-foreground: oklch(0.90 0.02 285);
+  --muted: oklch(0.25 0.05 285);
+  --muted-foreground: oklch(0.70 0.05 285);
+  --accent: oklch(0.28 0.06 285);
+  --accent-foreground: oklch(0.90 0.02 285);
+  --destructive: oklch(0.50 0.2 25);
+  --destructive-foreground: oklch(0.95 0 0);
+  --border: oklch(0.30 0.06 285);
+  --input: oklch(0.28 0.05 285);
+  --ring: oklch(0.65 0.18 285);
+  --chart-1: oklch(0.65 0.2 285);
+  --chart-2: oklch(0.65 0.15 180);
+  --chart-3: oklch(0.70 0.15 85);
+  --chart-4: oklch(0.60 0.2 320);
+  --chart-5: oklch(0.60 0.2 30);
+  --sidebar: oklch(0.20 0.04 285);
+  --sidebar-foreground: oklch(0.95 0.01 285);
+  --sidebar-primary: oklch(0.65 0.18 285);
+  --sidebar-primary-foreground: oklch(0.95 0 0);
+  --sidebar-accent: oklch(0.28 0.06 285);
+  --sidebar-accent-foreground: oklch(0.90 0.02 285);
+  --sidebar-border: oklch(0.30 0.06 285);
+  --sidebar-ring: oklch(0.60 0.18 285);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  *:hover > ::-webkit-scrollbar-thumb,
+  *:hover::-webkit-scrollbar-thumb {
+    background-color: var(--muted-foreground);
+    opacity: 0.5;
+  }
+}
+
+/* ============================================
+   ANIMACIONES - LectoRuta Saber
+   ============================================ */
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.3); }
+  50% { box-shadow: 0 0 20px 4px rgba(139, 92, 246, 0.15); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, 
+    var(--muted) 25%, 
+    var(--accent) 50%, 
+    var(--muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
+.page-transition {
+  animation: fade-in 0.3s ease-out, slide-up 0.4s ease-out;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(139, 92, 246, 0.5);
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 1.5s linear infinite;
+}
+
+@keyframes bounce-in {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.stagger-children > * {
+  opacity: 0;
+  animation: slide-up 0.4s ease-out forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
