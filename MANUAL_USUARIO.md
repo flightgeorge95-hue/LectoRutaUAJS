@@ -961,5 +961,67 @@ Ver sección "Importar Banco de Preguntas" en [Manual de Usuario - Docentes](#4-
 
 ---
 
+Tutorial: Registrar Estudiantes y Docentes como Administrador
+1. Acceder al Panel de Administrador
+1. Ve a http://localhost:3000/dashboard/admin
+2. Ingresa tu Cédula de Administrador y Contraseña
+3. Haz clic en "Ingresar al Panel"
+Login Admin
+2. Registrar un Estudiante
+1. En el panel, selecciona la pestaña "Grado 10°" o "Grado 11°" según corresponda
+2. Haz clic en el botón "Registrar Estudiante" (arriba a la derecha)
+3. Completa el formulario modal:
+Campo	Descripción
+Nombre	Nombre del estudiante
+Apellido	Apellido del estudiante
+Grado	Seleccionar 10° u 11° (dropdown)
+Tarjeta de Identidad	Número único (ej. 1098765432)
+Contraseña	Se recomienda usar la tarjeta de identidad
+Email	Correo electrónico
+Teléfono	Número de contacto (10 dígitos)
+Fecha de nacimiento	Selector de fecha
+4. Haz clic en "Registrar Estudiante"
+5. Verás el mensaje: "Estudiante nombre registrado exitosamente"
+6. El estudiante aparecerá automáticamente en la tabla y podrá iniciar sesión con su tarjeta de identidad
+3. Registrar un Docente
+1. En el panel, selecciona la pestaña "Docentes"
+2. Haz clic en el botón "Registrar Docente" (arriba a la derecha)
+3. Completa el formulario modal:
+Campo	Descripción
+Nombre	Nombre del docente
+Apellido	Apellido del docente
+Cédula	Número de cédula (ej. 52651850)
+Contraseña	Contraseña inicial para el docente
+Email	Correo institucional
+Institución	Prellenado: "Corporación Universitaria Antonio José de Sucre"
+Materia	Dropdown: Lectura Crítica, Lengua Castellana, Literatura, Comunicación y Lenguaje
+Grados a enseñar	Checkboxes: Grado 10° y/o Grado 11° (ambos marcados por defecto)
+4. Haz clic en "Registrar Docente"
+5. Verás el mensaje: "Docente nombre registrado exitosamente"
+6. El docente aparecerá en la tabla y podrá iniciar sesión con su cédula y contraseña
+4. Eliminar Usuarios (si es necesario)
+1. En cualquier pestaña, localiza el usuario en la tabla
+2. Haz clic en el ícono de papelera (🗑️) en la columna "Acción"
+3. Confirma en el diálogo: "¿Estás seguro de que deseas eliminar a nombre?"
+4. Haz clic en "Eliminar" (esta acción es irreversible)
+5. Cerrar Sesión
+Haz clic en "Cerrar sesión" (botón rojo en la esquina superior derecha)
+Resumen visual de la navegación
+/dashboard/admin  →  Login (cédula + contraseña)
+         ↓
+   Panel Admin
+   ┌─────────────────────────────────┐
+   │ [Grado 10°] [Grado 11°] [Docentes]  ←  Pestañas
+   │                                    │
+   │  Si Grado 10° o 11°:              │
+   │    → Botón "Registrar Estudiante"  │
+   │    → Tabla con estudiantes         │
+   │                                    │
+   │  Si Docentes:                      │
+   │    → Botón "Registrar Docente"     │
+   │    → Tabla con docentes            │
+   └─────────────────────────────────┘
+Nota: El administrador se autentica con su cédula (no con tarjeta de identidad). Los estudiantes inician sesión con su tarjeta de identidad y los docentes con su cédula.
+
 **© 2025 Alejandro Montes Pimienta - Corporación Universitaria Antonio José de Sucre (UAJS)**  
 **Todos los derechos reservados.**
