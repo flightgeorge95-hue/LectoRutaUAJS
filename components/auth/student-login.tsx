@@ -292,7 +292,7 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
       </div>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 flex items-center justify-center p-6 relative">
+      <div className="flex-1 flex items-start sm:items-center justify-center p-4 sm:p-6 relative overflow-y-auto">
 
         {/* Mobile background */}
         <div className="absolute inset-0 pointer-events-none lg:hidden overflow-hidden">
@@ -304,7 +304,7 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
               animate={{ y: [0, -12, 0], opacity: [0.06, 0.15, 0.06] }}
               transition={{ duration: 5 + i * 0.5, repeat: Infinity, delay: i * 0.35 }}
             >
-              <Star className="w-5 h-5 text-violet-500" />
+              <Star className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500" />
             </motion.div>
           ))}
         </div>
@@ -313,14 +313,14 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-sm relative z-10"
+          className="w-full max-w-sm relative z-10 py-4 sm:py-0"
         >
           {/* Mobile logo */}
-          <div className="lg:hidden flex flex-col items-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg mb-3">
-              <Rocket className="w-8 h-8 text-white" />
+          <div className="lg:hidden flex flex-col items-center mb-4 sm:mb-8">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-violet-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg mb-2 sm:mb-3">
+              <Rocket className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-violet-600 to-pink-600 bg-clip-text text-transparent">
               LectoRuta
             </h1>
           </div>
@@ -328,28 +328,28 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
           {/* Back button */}
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+            className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors mb-3 sm:mb-4"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Volver al inicio
           </Link>
 
           {/* Card */}
-          <div className="bg-card border border-border rounded-2xl shadow-xl p-8 space-y-6">
+          <div className="bg-card border border-border rounded-2xl shadow-xl p-5 sm:p-8 space-y-4 sm:space-y-6">
 
             <div className="space-y-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl">🎮</span>
-                <h2 className="text-2xl font-bold text-foreground">Portal Estudiante</h2>
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <span className="text-xl sm:text-2xl">🎮</span>
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground">Portal Estudiante</h2>
               </div>
-              <p className="text-sm text-muted-foreground">Ingresa y continúa tu aventura</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Ingresa y continúa tu aventura</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               {/* Tarjeta Identidad */}
-              <div className="space-y-2">
-                <Label htmlFor="tarjetaIdentidad" className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                  <CreditCard className="w-4 h-4 text-violet-600" />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="tarjetaIdentidad" className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground">
+                  <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-violet-600" />
                   Tarjeta de Identidad
                 </Label>
                 <Input
@@ -359,15 +359,15 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
                   value={tarjetaIdentidad}
                   onChange={(e) => { setTarjetaIdentidad(e.target.value); setError("") }}
                   disabled={isLoading}
-                  className="h-11 border-2 focus:border-violet-500 transition-colors rounded-xl"
+                  className="h-11 border-2 focus:border-violet-500 transition-colors rounded-xl text-base touch-friendly-text"
                   maxLength={15}
                 />
               </div>
 
               {/* Password */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                  <Lock className="w-4 h-4 text-violet-600" />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="password" className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground">
+                  <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-violet-600" />
                   Contraseña
                 </Label>
                 <div className="relative">
@@ -378,14 +378,14 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setError("") }}
                     disabled={isLoading}
-                    className="h-11 border-2 focus:border-violet-500 transition-colors rounded-xl pr-11"
+                    className="h-11 border-2 focus:border-violet-500 transition-colors rounded-xl pr-11 text-base touch-friendly-text"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                   </button>
                 </div>
               </div>
@@ -398,10 +398,10 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl"
                   >
-                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
-                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                    <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
+                    <p className="text-xs sm:text-sm text-red-600 dark:text-red-400">{error}</p>
                   </motion.div>
                 )}
                 {showSuccess && (
@@ -409,10 +409,10 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
                     key="success"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
-                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">¡Acceso autorizado! 🚀</p>
+                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 dark:text-green-400" />
+                    <p className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium">¡Acceso autorizado! 🚀</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -421,7 +421,7 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
               <Button
                 type="submit"
                 disabled={isLoading || !tarjetaIdentidad || !password}
-                className="w-full h-11 rounded-xl text-base font-bold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:from-violet-700 hover:via-fuchsia-700 hover:to-pink-700 shadow-md hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300 disabled:opacity-50"
+                className="w-full h-11 rounded-xl text-sm sm:text-base font-bold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:from-violet-700 hover:via-fuchsia-700 hover:to-pink-700 shadow-md hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300 disabled:opacity-50"
               >
                 {isLoading ? (
                   <motion.div className="flex items-center gap-2">
@@ -448,8 +448,8 @@ export function StudentLogin({ onLoginSuccess }: StudentLoginProps) {
             </form>
 
             {/* Footer */}
-            <div className="pt-2 border-t border-border text-center">
-              <p className="text-xs text-muted-foreground">
+            <div className="pt-1.5 sm:pt-2 border-t border-border text-center">
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 ¿Olvidaste tu contraseña? Habla con tu docente 🎓
               </p>
             </div>

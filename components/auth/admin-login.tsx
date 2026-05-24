@@ -54,13 +54,13 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-3 sm:p-4 safe-area-bottom">
       {/* Partículas animadas */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1.5 h-1.5 bg-emerald-400/30 rounded-full"
+            className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 bg-emerald-400/30 rounded-full"
             initial={{
               x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1000),
               y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 1000),
@@ -85,31 +85,31 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
         className="w-full max-w-md relative z-10"
       >
         <Card className="border-2 shadow-2xl backdrop-blur-sm bg-card/90">
-          <CardHeader className="space-y-4 text-center">
+          <CardHeader className="space-y-2 sm:space-y-4 text-center p-4 sm:p-6">
             <motion.div
               initial={{ scale: 0, rotate: -90 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
-              className="mx-auto w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg"
+              className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg"
             >
-              <ShieldCheck className="w-10 h-10 text-white" />
+              <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </motion.div>
 
             <div>
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Panel Administrador
               </CardTitle>
-              <CardDescription className="text-base mt-2">
-                Acceso exclusivo para administradores del sistema
+              <CardDescription className="text-xs sm:text-base mt-1 sm:mt-2">
+                Acceso exclusivo para administradores
               </CardDescription>
             </div>
           </CardHeader>
 
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="cedula" className="text-base font-medium flex items-center gap-2">
-                  <User className="w-4 h-4 text-emerald-600" />
+          <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="cedula" className="text-xs sm:text-base font-medium flex items-center gap-1.5 sm:gap-2">
+                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                   Cédula de Administrador
                 </Label>
                 <Input
@@ -122,14 +122,14 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                     setError("")
                   }}
                   disabled={isLoading}
-                  className="h-12 text-lg border-2 focus:border-emerald-500 transition-colors"
+                  className="h-10 sm:h-12 text-sm sm:text-lg border-2 focus:border-emerald-500 transition-colors touch-friendly-text"
                   maxLength={15}
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-base font-medium flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-emerald-600" />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="password" className="text-xs sm:text-base font-medium flex items-center gap-1.5 sm:gap-2">
+                  <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                   Contraseña
                 </Label>
                 <div className="relative">
@@ -143,14 +143,14 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                       setError("")
                     }}
                     disabled={isLoading}
-                    className="h-12 text-lg border-2 focus:border-emerald-500 transition-colors pr-12"
+                    className="h-10 sm:h-12 text-sm sm:text-lg border-2 focus:border-emerald-500 transition-colors pr-10 sm:pr-12 touch-friendly-text"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-muted-foreground dark:hover:text-gray-200 transition-colors"
+                    className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-muted-foreground dark:hover:text-gray-200 transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                   </button>
                 </div>
               </div>
@@ -161,10 +161,10 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
                   >
-                    <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
-                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+                    <p className="text-xs sm:text-sm text-red-600 dark:text-red-400">{error}</p>
                   </motion.div>
                 )}
 
@@ -172,10 +172,10 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
-                    <p className="text-sm text-green-600 dark:text-green-400">Acceso autorizado</p>
+                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
+                    <p className="text-xs sm:text-sm text-green-600 dark:text-green-400">Acceso autorizado</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -183,17 +183,17 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
               <Button
                 type="submit"
                 disabled={isLoading || !cedula || !password}
-                className="w-full h-12 text-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="w-full h-10 sm:h-12 text-sm sm:text-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 {isLoading ? (
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                   >
-                    <Sparkles className="w-5 h-5" />
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                   </motion.div>
                 ) : (
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5 sm:gap-2">
                     Ingresar al Sistema
                     <motion.div
                       animate={{ x: [0, 5, 0] }}
@@ -210,9 +210,9 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="mt-6 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800"
+              className="mt-4 sm:mt-6 p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800"
             >
-              <p className="text-xs text-emerald-700 dark:text-emerald-400 text-center">
+              <p className="text-[10px] sm:text-xs text-emerald-700 dark:text-emerald-400 text-center">
                 Acceso restringido — Solo personal autorizado del sistema
               </p>
             </motion.div>

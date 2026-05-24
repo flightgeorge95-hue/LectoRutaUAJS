@@ -180,7 +180,7 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
       </div>
 
       {/* ── Right Panel (Form) ── */}
-      <div className="flex-1 flex items-center justify-center p-6 relative">
+      <div className="flex-1 flex items-start sm:items-center justify-center p-4 sm:p-6 relative overflow-y-auto">
 
         {/* Subtle background pattern for small screens */}
         <div className="absolute inset-0 pointer-events-none lg:hidden overflow-hidden">
@@ -195,7 +195,7 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
               animate={{ y: [0, -10, 0], opacity: [0.08, 0.18, 0.08] }}
               transition={{ duration: 5 + i * 0.4, repeat: Infinity, delay: i * 0.3 }}
             >
-              <BookOpen className="w-5 h-5 text-indigo-500" />
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" />
             </motion.div>
           ))}
         </div>
@@ -204,14 +204,14 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-sm relative z-10"
+          className="w-full max-w-sm relative z-10 py-4 sm:py-0"
         >
           {/* Mobile logo */}
-          <div className="lg:hidden flex flex-col items-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg mb-3">
-              <BookOpen className="w-8 h-8 text-white" />
+          <div className="lg:hidden flex flex-col items-center mb-4 sm:mb-8">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg mb-2 sm:mb-3">
+              <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               LectoRuta
             </h1>
           </div>
@@ -219,25 +219,25 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
           {/* Back button */}
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+            className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors mb-3 sm:mb-4"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Volver al inicio
           </Link>
 
           {/* Card */}
-          <div className="bg-card border border-border rounded-2xl shadow-xl p-8 space-y-6">
+          <div className="bg-card border border-border rounded-2xl shadow-xl p-5 sm:p-8 space-y-4 sm:space-y-6">
 
             <div className="space-y-1">
-              <h2 className="text-2xl font-bold text-foreground">Portal Docente</h2>
-              <p className="text-sm text-muted-foreground">Ingresa tus credenciales para continuar</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">Portal Docente</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">Ingresa tus credenciales</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               {/* Cédula */}
-              <div className="space-y-2">
-                <Label htmlFor="cedula" className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                  <User className="w-4 h-4 text-blue-600" />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="cedula" className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground">
+                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
                   Cédula
                 </Label>
                 <Input
@@ -247,15 +247,15 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
                   value={cedula}
                   onChange={(e) => { setCedula(e.target.value); setError("") }}
                   disabled={isLoading}
-                  className="h-11 border-2 focus:border-blue-500 transition-colors rounded-xl"
+                  className="h-11 border-2 focus:border-blue-500 transition-colors rounded-xl text-base touch-friendly-text"
                   maxLength={10}
                 />
               </div>
 
               {/* Password */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                  <Lock className="w-4 h-4 text-blue-600" />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="password" className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground">
+                  <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
                   Contraseña
                 </Label>
                 <div className="relative">
@@ -266,14 +266,14 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setError("") }}
                     disabled={isLoading}
-                    className="h-11 border-2 focus:border-blue-500 transition-colors rounded-xl pr-11"
+                    className="h-11 border-2 focus:border-blue-500 transition-colors rounded-xl pr-11 text-base touch-friendly-text"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                   </button>
                 </div>
               </div>
@@ -286,10 +286,10 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl"
                   >
-                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
-                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                    <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
+                    <p className="text-xs sm:text-sm text-red-600 dark:text-red-400">{error}</p>
                   </motion.div>
                 )}
                 {showSuccess && (
@@ -297,10 +297,10 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
                     key="success"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
-                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">¡Bienvenido de vuelta!</p>
+                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 dark:text-green-400" />
+                    <p className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium">¡Bienvenido de vuelta!</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -309,7 +309,7 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
               <Button
                 type="submit"
                 disabled={isLoading || !cedula || !password}
-                className="w-full h-11 rounded-xl text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+                className="w-full h-11 rounded-xl text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50"
               >
                 {isLoading ? (
                   <motion.div className="flex items-center gap-2">
@@ -336,10 +336,10 @@ export function TeacherLogin({ onLoginSuccess }: TeacherLoginProps) {
             </form>
 
             {/* Footer */}
-            <div className="pt-2 border-t border-border">
-              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                <GraduationCap className="w-3.5 h-3.5" />
-                <span>LectoRuta Saber 11 · UAJS · 2025</span>
+            <div className="pt-1.5 sm:pt-2 border-t border-border">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                <GraduationCap className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <span>LectoRuta Saber 11 · UAJS</span>
               </div>
             </div>
           </div>

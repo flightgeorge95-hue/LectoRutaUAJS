@@ -176,32 +176,32 @@ export function AchievementsPage({ student }: AchievementsPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-muted">
       {/* Header */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b border-border bg-background/80 backdrop-blur-sm safe-area-top">
+        <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Volver al Dashboard
+            <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+              <Button variant="ghost" size="sm" className="h-8 sm:h-9 px-1.5 sm:px-2 text-xs sm:text-sm">
+                <ArrowLeft className="h-3.5 w-3.5 sm:mr-2" />
+                <span className="hidden sm:inline">Volver</span>
               </Button>
-              <div className="h-6 w-px bg-border" />
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Logros y Insignias</h1>
-                <p className="text-sm text-muted-foreground">Tus logros académicos</p>
+              <div className="h-4 w-px sm:h-6 bg-border hidden sm:block" />
+              <div className="min-w-0">
+                <h1 className="text-sm sm:text-xl font-bold text-foreground truncate">Logros y Insignias</h1>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">Tus logros académicos</p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm font-medium text-foreground">{student.name}</p>
-              <p className="text-xs text-muted-foreground">Nivel {student.level}</p>
+            <div className="text-right shrink-0">
+              <p className="text-xs sm:text-sm font-medium text-foreground truncate max-w-[100px] sm:max-w-none">{student.name}</p>
+              <p className="text-[9px] sm:text-xs text-muted-foreground">Nivel {student.level}</p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
-        <div className="space-y-6">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Overview Stats */}
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
             <Card
               className={isYoungerStudent ? "border-primary/20 bg-primary/5" : "border-secondary/20 bg-secondary/5"}
             >
@@ -283,22 +283,22 @@ export function AchievementsPage({ student }: AchievementsPageProps) {
           </Card>
 
           {/* Achievement Categories */}
-          <Tabs defaultValue="reading" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <Tabs defaultValue="reading" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 overflow-x-auto">
               {Object.entries(achievementCategories).map(([key, category]) => {
                 const Icon = category.icon
                 return (
-                  <TabsTrigger key={key} value={key} className="flex items-center gap-2">
-                    <Icon className="h-4 w-4" />
-                    {category.name}
+                  <TabsTrigger key={key} value={key} className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3">
+                    <Icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">{category.name}</span>
                   </TabsTrigger>
                 )
               })}
             </TabsList>
 
             {Object.entries(achievementCategories).map(([key, category]) => (
-              <TabsContent key={key} value={key} className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+              <TabsContent key={key} value={key} className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {category.achievements.map((achievement) => (
                     <Card
                       key={achievement.id}

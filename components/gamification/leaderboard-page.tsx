@@ -86,17 +86,17 @@ export function LeaderboardPage({ currentStudent }: LeaderboardPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-muted">
       {/* Header */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b border-border bg-background/80 backdrop-blur-sm safe-area-top">
+        <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Volver al Dashboard
+            <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+              <Button variant="ghost" size="sm" className="h-8 sm:h-9 px-1.5 sm:px-2 text-xs sm:text-sm">
+                <ArrowLeft className="h-3.5 w-3.5 sm:mr-2" />
+                <span className="hidden sm:inline">Volver</span>
               </Button>
-              <div className="h-6 w-px bg-border" />
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Tabla de Clasificación</h1>
+              <div className="h-4 w-px sm:h-6 bg-border hidden sm:block" />
+              <div className="min-w-0">
+                <h1 className="text-sm sm:text-xl font-bold text-foreground truncate">Tabla de Clasificación</h1>
                 <p className="text-sm text-muted-foreground">Compite con tus compañeros</p>
               </div>
             </div>
@@ -108,31 +108,31 @@ export function LeaderboardPage({ currentStudent }: LeaderboardPageProps) {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
-        <div className="space-y-6">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Current User Stats */}
           <Card
             className={`border-2 ${isYoungerStudent ? "border-primary/30 bg-primary/5" : "border-secondary/30 bg-secondary/5"}`}
           >
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5" />
+            <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+              <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-lg">
+                <Star className="h-4 w-4 sm:h-5 sm:w-5" />
                 Tu Posición Actual
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-4">
+            <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground mb-1">3°</div>
-                  <p className="text-sm text-muted-foreground">En tu clase</p>
+                  <div className="text-lg sm:text-2xl font-bold text-foreground mb-0.5 sm:mb-1">3°</div>
+                  <p className="text-[10px] sm:text-sm text-muted-foreground">En tu clase</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground mb-1">5°</div>
-                  <p className="text-sm text-muted-foreground">En tu grado</p>
+                  <div className="text-lg sm:text-2xl font-bold text-foreground mb-0.5 sm:mb-1">5°</div>
+                  <p className="text-[10px] sm:text-sm text-muted-foreground">En tu grado</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground mb-1">12°</div>
-                  <p className="text-sm text-muted-foreground">En el colegio</p>
+                  <div className="text-lg sm:text-2xl font-bold text-foreground mb-0.5 sm:mb-1">12°</div>
+                  <p className="text-[10px] sm:text-sm text-muted-foreground">En el colegio</p>
                 </div>
               </div>
             </CardContent>
@@ -141,61 +141,61 @@ export function LeaderboardPage({ currentStudent }: LeaderboardPageProps) {
           {/* Leaderboard Tabs */}
           <Tabs defaultValue="class" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="class" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Mi Clase
+              <TabsTrigger value="class" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Mi</span> Clase
               </TabsTrigger>
-              <TabsTrigger value="grade" className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Mi Grado
+              <TabsTrigger value="grade" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1">
+                <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Mi</span> Grado
               </TabsTrigger>
-              <TabsTrigger value="school" className="flex items-center gap-2">
-                <Trophy className="h-4 w-4" />
+              <TabsTrigger value="school" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1">
+                <Trophy className="h-3 w-3 sm:h-4 sm:w-4" />
                 Colegio
               </TabsTrigger>
             </TabsList>
 
             {Object.entries(mockLeaderboards).map(([key, leaderboard]) => (
-              <TabsContent key={key} value={key} className="space-y-4">
-                <div className="space-y-3">
+              <TabsContent key={key} value={key} className="space-y-3 sm:space-y-4">
+                <div className="space-y-2 sm:space-y-3">
                   {leaderboard.map((student) => (
                     <Card
                       key={student.id}
                       className={`transition-all hover:shadow-sm ${getPositionColor(student.position, student.isCurrentUser)}`}
                     >
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center justify-center w-12">
+                      <CardContent className="p-3 sm:p-4">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                          <div className="flex items-center justify-center w-8 sm:w-12 shrink-0">
                             {getPositionIcon(student.position)}
                           </div>
-                          <Avatar className="h-10 w-10">
+                          <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0">
                             <AvatarImage src={`/student-${student.id}.png`} />
-                            <AvatarFallback>
+                            <AvatarFallback className="text-[9px] sm:text-xs">
                               {student.name
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold text-foreground">{student.name}</h3>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1 sm:gap-2">
+                              <h3 className="font-semibold text-xs sm:text-base text-foreground truncate">{student.name}</h3>
                               {student.isCurrentUser && (
-                                <Badge variant="outline" className="text-xs">
+                                <Badge variant="outline" className="text-[9px] sm:text-xs px-1 sm:px-1.5 py-0">
                                   Tú
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-sm text-muted-foreground">Nivel {student.level}</p>
+                            <p className="text-[10px] sm:text-sm text-muted-foreground">Nivel {student.level}</p>
                           </div>
-                          <div className="text-right space-y-1">
-                            <div className="flex items-center gap-1">
-                              <Star className="h-4 w-4 text-accent" />
-                              <span className="font-bold text-foreground">{student.points}</span>
+                          <div className="text-right space-y-0.5 sm:space-y-1 shrink-0">
+                            <div className="flex items-center gap-0.5 sm:gap-1">
+                              <Star className="h-3 w-3 sm:h-4 sm:w-4 text-accent" />
+                              <span className="font-bold text-xs sm:text-base text-foreground">{student.points}</span>
                             </div>
-                            <div className="flex items-center gap-1">
-                              <Zap className="h-3 w-3 text-chart-2" />
-                              <span className="text-xs text-muted-foreground">{student.streak} días</span>
+                            <div className="flex items-center gap-0.5 sm:gap-1">
+                              <Zap className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-chart-2" />
+                              <span className="text-[9px] sm:text-xs text-muted-foreground">{student.streak}d</span>
                             </div>
                           </div>
                         </div>

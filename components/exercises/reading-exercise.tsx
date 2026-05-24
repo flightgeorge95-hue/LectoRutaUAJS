@@ -168,17 +168,17 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
     const gc = gradeColor(hasOpen ? 1 : r.colombianGrade)
 
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-3 sm:p-4 safe-area-bottom">
         {showConfetti && <Confetti />}
-        <div className="w-full max-w-lg space-y-4">
+        <div className="w-full max-w-lg space-y-3 sm:space-y-4">
 
           {/* ── Grade card ───────────────────────────────────────────────── */}
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-            className="rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden shadow-2xl shadow-black/50"
+            className="rounded-2xl sm:rounded-3xl bg-slate-900 border border-slate-800 overflow-hidden shadow-2xl shadow-black/50"
           >
             {/* Top banner */}
             <div className={cn(
-              "px-6 pt-8 pb-6 text-center",
+              "px-4 sm:px-6 pt-6 sm:pt-8 pb-4 sm:pb-6 text-center",
               hasOpen ? "bg-gradient-to-br from-violet-800 to-purple-900"
               : r.colombianGrade >= 4.0 ? "bg-gradient-to-br from-emerald-700 to-teal-900"
               : r.colombianGrade >= 3.0 ? "bg-gradient-to-br from-blue-700 to-indigo-900"
@@ -186,18 +186,18 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
               : "bg-gradient-to-br from-red-800 to-rose-900"
             )}>
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 240, delay: 0.1 }}
-                className="text-6xl mb-3">
+                className="text-4xl sm:text-6xl mb-2 sm:mb-3">
                 {hasOpen ? "📝" : r.colombianGrade >= 4.0 ? "🏆" : r.colombianGrade >= 3.0 ? "🌟" : r.colombianGrade >= 2.0 ? "💪" : "📚"}
               </motion.div>
               <motion.h1 initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.25 }}
-                className="text-3xl font-black text-white">
+                className="text-2xl sm:text-3xl font-black text-white">
                 {hasOpen ? "¡Enviado!" : r.colombianGrade >= 4.0 ? "¡Excelente!" : r.colombianGrade >= 3.0 ? "¡Aprobaste!" : r.colombianGrade >= 2.0 ? "¡Sigue adelante!" : "¡No te rindas!"}
               </motion.h1>
               <motion.p initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.35 }}
-                className="text-white/80 mt-1.5 text-sm font-medium">
+                className="text-white/80 mt-1 text-xs sm:text-sm font-medium">
                 {hasOpen
                   ? `Tu docente revisará ${openCount} pregunta${openCount > 1 ? "s" : ""} abierta${openCount > 1 ? "s" : ""}`
-                  : r.colombianGrade >= 3.0 ? "¡Cumpliste el objetivo de aprendizaje!" : "Repasa el material y vuelve a intentarlo"}
+                  : r.colombianGrade >= 3.0 ? "¡Cumpliste el objetivo!" : "Repasa el material y vuelve a intentarlo"}
               </motion.p>
             </div>
 
@@ -206,34 +206,34 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
               className="grid grid-cols-3 divide-x divide-slate-800 border-b border-slate-800"
             >
               {/* Grade */}
-              <div className="px-4 py-5 text-center">
+              <div className="px-2 sm:px-4 py-3 sm:py-5 text-center">
                 <div className={cn(
-                  "text-3xl font-black",
+                  "text-2xl sm:text-3xl font-black",
                   hasOpen ? "text-violet-300" : r.colombianGrade >= 3.0 ? "text-emerald-300" : "text-amber-300"
                 )}>
                   {hasOpen ? "—" : <AnimatedCounter target={r.colombianGrade} suffix="" duration={1400} />}
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wide">Nota / 5.0</p>
+                <p className="text-[8px] sm:text-[10px] text-slate-500 mt-0.5 uppercase tracking-wide">Nota / 5.0</p>
               </div>
               {/* Correct */}
-              <div className="px-4 py-5 text-center">
-                <div className="text-3xl font-black text-slate-200">
+              <div className="px-2 sm:px-4 py-3 sm:py-5 text-center">
+                <div className="text-2xl sm:text-3xl font-black text-slate-200">
                   {hasOpen ? <span className="text-violet-300">{r.mcCount > 0 ? `${r.correct}/${r.mcCount}` : "—"}</span> : `${r.correct}/${r.mcCount}`}
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wide">Correctas</p>
+                <p className="text-[8px] sm:text-[10px] text-slate-500 mt-0.5 uppercase tracking-wide">Correctas</p>
               </div>
               {/* Time */}
-              <div className="px-4 py-5 text-center">
-                <div className="text-3xl font-black text-blue-300">{fmt(timeUsed)}</div>
-                <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wide">Tiempo</p>
+              <div className="px-2 sm:px-4 py-3 sm:py-5 text-center">
+                <div className="text-2xl sm:text-3xl font-black text-blue-300">{fmt(timeUsed)}</div>
+                <p className="text-[8px] sm:text-[10px] text-slate-500 mt-0.5 uppercase tracking-wide">Tiempo</p>
               </div>
             </motion.div>
 
             {/* Open pending notice */}
             {hasOpen && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: phase >= 1 ? 1 : 0 }}
-                className="mx-5 mt-4 rounded-xl bg-violet-950/60 border border-violet-800 px-4 py-3 text-sm text-violet-300 text-center">
-                📋 Tu docente revisará tus respuestas y publicará la nota en tu portal.
+                className="mx-3 sm:mx-5 mt-3 sm:mt-4 rounded-xl bg-violet-950/60 border border-violet-800 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-violet-300 text-center">
+                📋 Tu docente revisará tus respuestas y publicará la nota.
               </motion.div>
             )}
           </motion.div>
@@ -242,10 +242,10 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: phase >= 2 ? 1 : 0, y: phase >= 2 ? 0 : 12 }}
             className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden"
           >
-            <div className="px-5 py-3.5 border-b border-slate-800">
-              <p className="text-sm font-bold text-white">Revisión de respuestas</p>
+            <div className="px-4 sm:px-5 py-2.5 sm:py-3.5 border-b border-slate-800">
+              <p className="text-xs sm:text-sm font-bold text-white">Revisión de respuestas</p>
             </div>
-            <div className="divide-y divide-slate-800/60 max-h-72 overflow-y-auto">
+            <div className="divide-y divide-slate-800/60 max-h-60 sm:max-h-72 overflow-y-auto">
               {exercise.questions.map((q, i) => {
                 const isOpen = isOpenQ(q)
                 const mc = isMC(q)
@@ -253,10 +253,10 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
                 const answered = mc ? answers[q.id] !== undefined : (openAnswers[q.id]?.trim().length ?? 0) > 0
 
                 return (
-                  <div key={q.id} className="px-5 py-3.5 flex items-start gap-3">
+                  <div key={q.id} className="px-3 sm:px-5 py-2.5 sm:py-3.5 flex items-start gap-2 sm:gap-3">
                     {/* Status icon */}
                     <div className={cn(
-                      "w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-xs font-black border",
+                      "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-[9px] sm:text-xs font-black border",
                       isOpen ? "bg-violet-900 border-violet-700 text-violet-300"
                       : correct ? "bg-emerald-900 border-emerald-700 text-emerald-300"
                       : !answered ? "bg-slate-800 border-slate-600 text-slate-400"
@@ -266,35 +266,35 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-200 font-medium line-clamp-1">
+                      <p className="text-xs sm:text-sm text-slate-200 font-medium line-clamp-1">
                         <span className="text-slate-500 mr-1">P{i + 1}.</span>
-                        {q.text.length > 68 ? q.text.slice(0, 68) + "…" : q.text}
+                        {q.text.length > 50 ? q.text.slice(0, 50) + "…" : q.text}
                       </p>
 
                       {isOpen && (
-                        <p className="text-xs text-violet-400 mt-0.5 flex items-center gap-1">
-                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-                          Pendiente de calificación por tu docente
+                        <p className="text-[9px] sm:text-xs text-violet-400 mt-0.5 flex items-center gap-1">
+                          <span className="inline-block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-violet-400 animate-pulse" />
+                          Pendiente de calificación
                         </p>
                       )}
                       {mc && correct && (
-                        <p className="text-xs text-emerald-400 mt-0.5">
+                        <p className="text-[9px] sm:text-xs text-emerald-400 mt-0.5 truncate">
                           ✓ {q.options[answers[q.id]]}
                         </p>
                       )}
                       {mc && !correct && answered && (
-                        <p className="text-xs text-red-400 mt-0.5">
-                          Tu resp: {q.options[answers[q.id]]} · Correcta: {q.options[q.correctAnswer]}
+                        <p className="text-[9px] sm:text-xs text-red-400 mt-0.5 truncate">
+                          Tu resp: {q.options[answers[q.id]]}
                         </p>
                       )}
                       {mc && !answered && (
-                        <p className="text-xs text-slate-500 mt-0.5">Sin respuesta</p>
+                        <p className="text-[9px] sm:text-xs text-slate-500 mt-0.5">Sin respuesta</p>
                       )}
                     </div>
 
                     {/* Right badge */}
                     <span className={cn(
-                      "text-[10px] px-2 py-0.5 rounded-full border shrink-0",
+                      "text-[8px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full border shrink-0",
                       isOpen ? "bg-violet-950/60 border-violet-800 text-violet-400"
                       : correct ? "bg-emerald-950/60 border-emerald-800 text-emerald-400"
                       : "bg-red-950/60 border-red-900 text-red-400"
@@ -309,9 +309,9 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
 
           {/* ── Bottom action ────────────────────────────────────────────── */}
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: phase >= 3 ? 1 : 0, y: phase >= 3 ? 0 : 8 }}>
-            <Button className="w-full h-13 py-3.5 text-base font-bold bg-violet-700 hover:bg-violet-600 text-white gap-2"
+            <Button className="w-full h-11 sm:h-13 py-3 sm:py-3.5 text-sm sm:text-base font-bold bg-violet-700 hover:bg-violet-600 text-white gap-2"
               onClick={() => router.push("/dashboard/student")}>
-              <Home className="h-5 w-5" /> Volver al portal
+              <Home className="h-4 w-4 sm:h-5 sm:w-5" /> Volver al portal
             </Button>
           </motion.div>
         </div>
@@ -324,44 +324,44 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
     <div className="min-h-screen bg-slate-950 text-slate-100">
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 safe-area-top">
         <div className="h-1 bg-slate-800">
           <motion.div animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }}
             className="h-full bg-gradient-to-r from-violet-500 to-purple-500" />
         </div>
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-3xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-1.5 sm:gap-3">
           <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard/student")}
-            className="text-slate-400 hover:text-white shrink-0 -ml-1">
+            className="text-slate-400 hover:text-white shrink-0 -ml-1 h-8 w-8 sm:h-auto sm:w-auto p-0 sm:px-2">
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-sm font-bold text-white truncate">{exercise.title}</h1>
-            <p className="text-xs text-slate-400">{exercise.subject} · Grado {exercise.grade}°</p>
+            <h1 className="text-xs sm:text-sm font-bold text-white truncate">{exercise.title}</h1>
+            <p className="text-[9px] sm:text-xs text-slate-400">{exercise.subject} · Grado {exercise.grade}°</p>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <div className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold border",
+              "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold border",
               timeLeft < 60 ? "bg-red-950 border-red-700 text-red-300 animate-pulse"
               : timeLeft < 300 ? "bg-amber-950 border-amber-700 text-amber-300"
               : "bg-slate-800 border-slate-700 text-slate-300"
             )}>
-              <Clock className="h-3.5 w-3.5" /> {fmt(timeLeft)}
+              <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> <span className="hidden xs:inline">{fmt(timeLeft)}</span><span className="xs:hidden">{Math.floor(timeLeft / 60)}m</span>
             </div>
-            <div className="px-3 py-1.5 rounded-full text-sm font-bold bg-slate-800 border border-slate-700 text-slate-300">
+            <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold bg-slate-800 border border-slate-700 text-slate-300">
               {currentQuestion + 1}/{exercise.questions.length}
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+      <main className="max-w-3xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-3 sm:space-y-4">
 
         {/* Question dots */}
-        <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
           {exercise.questions.map((q, i) => (
             <button key={q.id} onClick={() => setCurrentQuestion(i)}
               className={cn(
-                "w-8 h-8 rounded-full text-xs font-bold transition-all border-2",
+                "w-7 h-7 sm:w-8 sm:h-8 rounded-full text-[9px] sm:text-xs font-bold transition-all border-2",
                 i === currentQuestion
                   ? "bg-violet-600 border-violet-400 text-white shadow-md shadow-violet-900/50"
                   : hasAnswered(q)
@@ -381,32 +381,32 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
             className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden"
           >
             {/* Question header */}
-            <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-violet-900 border border-violet-700 text-violet-300 text-xs font-black shrink-0">
+            <div className="px-3 sm:px-5 py-3 sm:py-4 border-b border-slate-800 flex items-center justify-between gap-2 sm:gap-3">
+              <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+                <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-violet-900 border border-violet-700 text-violet-300 text-[9px] sm:text-xs font-black shrink-0">
                   {currentQuestion + 1}
                 </span>
-                <div>
-                  <span className="text-sm font-semibold text-white">Pregunta {currentQuestion + 1}</span>
+                <div className="min-w-0">
+                  <span className="text-xs sm:text-sm font-semibold text-white truncate">Pregunta {currentQuestion + 1}</span>
                   {isOpenQ(currentQ) && (
-                    <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-violet-900/70 border border-violet-700 text-violet-300">
+                    <span className="ml-1 sm:ml-2 text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-violet-900/70 border border-violet-700 text-violet-300">
                       Abierta
                     </span>
                   )}
                 </div>
               </div>
-              <span className="text-[11px] text-slate-400 bg-slate-800 px-2 py-1 rounded-lg border border-slate-700 shrink-0 hidden sm:block">
+              <span className="text-[9px] sm:text-[11px] text-slate-400 bg-slate-800 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-slate-700 shrink-0 hidden sm:block">
                 {currentQ.competency?.split(" ").slice(0, 3).join(" ")}
               </span>
             </div>
 
-            <div className="p-5 space-y-5">
+            <div className="p-3 sm:p-5 space-y-3 sm:space-y-5">
               {/* Question text */}
-              <p className="text-[1.0rem] font-medium text-white leading-relaxed">{currentQ.text}</p>
+              <p className="text-sm sm:text-base font-medium text-white leading-relaxed">{currentQ.text}</p>
 
               {/* MC options — no feedback shown during quiz */}
               {isMC(currentQ) && (currentQ.options?.length ?? 0) > 0 && (
-                <div className="space-y-2.5">
+                <div className="space-y-2 sm:space-y-2.5">
                   {currentQ.options.map((opt, idx) => {
                     const letter = String.fromCharCode(65 + idx)
                     const sel = answers[currentQ.id] === idx
@@ -414,19 +414,19 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
                       <button key={idx}
                         onClick={() => setAnswers({ ...answers, [currentQ.id]: idx })}
                         className={cn(
-                          "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all text-left",
+                          "w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3.5 rounded-xl border-2 transition-all text-left",
                           sel
                             ? "border-violet-500 bg-violet-900/50 text-white"
                             : "border-slate-700 bg-slate-800/50 text-slate-200 hover:border-violet-600 hover:bg-violet-900/20"
                         )}
                       >
                         <span className={cn(
-                          "inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-black shrink-0 border transition-colors",
+                          "inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-lg text-[9px] sm:text-xs font-black shrink-0 border transition-colors",
                           sel ? "bg-violet-600 border-violet-500 text-white" : "bg-slate-700 border-slate-600 text-slate-300"
                         )}>
                           {letter}
                         </span>
-                        <span className="text-sm font-medium leading-snug flex-1">{opt}</span>
+                        <span className="text-xs sm:text-sm font-medium leading-snug flex-1">{opt}</span>
                       </button>
                     )
                   })}
@@ -435,19 +435,19 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
 
               {/* Open question textarea */}
               {isOpenQ(currentQ) && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-violet-300 border-b border-slate-800 pb-2">
-                    <PenLine className="h-4 w-4" />
-                    <span className="text-sm font-semibold">Escribe tu respuesta completa:</span>
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-violet-300 border-b border-slate-800 pb-1.5 sm:pb-2">
+                    <PenLine className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="text-xs sm:text-sm font-semibold">Escribe tu respuesta:</span>
                   </div>
                   <Textarea
-                    placeholder="Desarrolla tu análisis con argumentos basados en el texto. Sé claro y preciso..."
+                    placeholder="Desarrolla tu análisis con argumentos..."
                     value={openAnswers[currentQ.id] || ""}
                     onChange={(e) => setOpenAnswers({ ...openAnswers, [currentQ.id]: e.target.value })}
-                    rows={9}
-                    className="bg-slate-800/60 border-slate-700 text-white placeholder:text-slate-500 focus:border-violet-500 resize-none text-[0.92rem] leading-[1.8]"
+                    rows={6}
+                    className="bg-slate-800/60 border-slate-700 text-white placeholder:text-slate-500 focus:border-violet-500 resize-none text-sm leading-[1.6] sm:leading-[1.8]"
                   />
-                  <div className="flex justify-between text-xs">
+                  <div className="flex justify-between text-[10px] sm:text-xs">
                     <span className="text-slate-500">Tu docente calificará esta respuesta</span>
                     <span className={cn("font-medium",
                       (openAnswers[currentQ.id]?.length ?? 0) > 60 ? "text-emerald-400"
@@ -462,20 +462,20 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
             </div>
 
             {/* Navigation */}
-            <div className="px-5 py-4 border-t border-slate-800 flex items-center justify-between">
+            <div className="px-3 sm:px-5 py-3 sm:py-4 border-t border-slate-800 flex items-center justify-between gap-2">
               <Button variant="ghost" onClick={handlePrev} disabled={currentQuestion === 0}
-                className="text-slate-400 hover:text-white hover:bg-slate-800 gap-2">
-                <ArrowLeft className="h-4 w-4" /> Anterior
+                className="text-slate-400 hover:text-white hover:bg-slate-800 gap-1 sm:gap-2 text-xs sm:text-sm h-8 sm:h-10 px-2 sm:px-3">
+                <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> <span className="hidden xs:inline">Anterior</span>
               </Button>
 
               <Button onClick={handleNext} disabled={!hasAnswered(currentQ)}
                 className={cn(
-                  "text-white px-6 gap-2 font-semibold",
+                  "text-white px-3 sm:px-6 gap-1 sm:gap-2 font-semibold text-xs sm:text-sm h-8 sm:h-10",
                   isLast ? "bg-emerald-700 hover:bg-emerald-600" : "bg-violet-700 hover:bg-violet-600"
                 )}>
                 {isLast
-                  ? <><SendHorizontal className="h-4 w-4" /> Finalizar</>
-                  : <>Siguiente <ArrowRight className="h-4 w-4" /></>}
+                  ? <><SendHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Finalizar</>
+                  : <>Siguiente <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" /></>}
               </Button>
             </div>
           </motion.div>

@@ -96,13 +96,30 @@ export function AnimatedNavbar() {
       </div>
 
       {/* Mobile Menu Button */}
-      <div className="lg:hidden">
+      <div className="lg:hidden flex items-center gap-2">
+        {/* Mobile theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="h-10 w-10 rounded-xl flex items-center justify-center bg-card border border-border text-muted-foreground hover:bg-accent touch-friendly"
+          aria-label="Cambiar tema"
+        >
+          {mounted && (
+            <motion.div
+              key={theme}
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </motion.div>
+          )}
+        </button>
         <motion.button
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring" }}
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={`h-10 w-10 rounded-xl flex items-center justify-center shadow-md transition-all duration-300 ${
+          className={`h-10 w-10 rounded-xl flex items-center justify-center shadow-md transition-all duration-300 touch-friendly ${
             mobileOpen
               ? "bg-red-500 text-white"
               : "bg-gradient-to-br from-purple-600 to-indigo-600 text-white"
@@ -128,7 +145,7 @@ export function AnimatedNavbar() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-72 bg-card z-[60] lg:hidden shadow-2xl"
+              className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-sm bg-card z-[60] lg:hidden shadow-2xl"
             >
               <div className="flex flex-col h-full">
                 <div className="p-6 border-b border-border">
