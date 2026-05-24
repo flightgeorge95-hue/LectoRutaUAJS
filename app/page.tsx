@@ -66,7 +66,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background dark:from-background dark:via-background dark:to-background transition-colors duration-300">
       <WelcomeAudio />
-      <header className="border-b border-border bg-card/95 backdrop-blur-sm sticky top-0 z-40 shadow-sm transition-colors duration-300">
+      <header className="border-b border-border bg-card/95 backdrop-blur-sm sticky top-0 z-40 shadow-sm transition-colors duration-300 isolate">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-4">

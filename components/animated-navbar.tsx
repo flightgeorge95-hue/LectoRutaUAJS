@@ -138,37 +138,37 @@ export function AnimatedNavbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden"
+              className="fixed inset-0 bg-black/60 z-[55] lg:hidden"
             />
             <motion.div
               initial={{ x: "100%", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-sm bg-card z-[60] lg:hidden shadow-2xl"
+              className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-sm z-[65] lg:hidden shadow-2xl bg-white dark:bg-gray-950"
             >
               <div className="flex flex-col h-full">
-                <div className="p-6 border-b border-border">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-800">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
                         <GraduationCap className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-foreground">LectoRuta Saber</h3>
-                        <p className="text-xs text-muted-foreground">UAJS</p>
+                        <h3 className="font-bold text-gray-900 dark:text-white">LectoRuta Saber</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">UAJS</p>
                       </div>
                     </div>
                     <button
                       onClick={() => setMobileOpen(false)}
-                      className="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-accent"
+                      className="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                      <X className="h-4 w-4 text-gray-500" />
+                      <X className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                     </button>
                   </div>
                 </div>
 
-                <div className="flex-1 p-4 space-y-1">
+                <div className="flex-1 p-4 space-y-1 bg-white dark:bg-gray-950">
                   {NAV_ITEMS.map((item, i) => {
                     const Icon = item.icon
                     const isActive = activeItem === item.id
@@ -182,21 +182,21 @@ export function AnimatedNavbar() {
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${
                           isActive
                             ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md"
-                            : "text-foreground/80 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                         }`}
                       >
                         <Icon className="h-5 w-5" />
                         <span className="font-medium flex-1">{item.label}</span>
-                        <ChevronRight className={`h-4 w-4 ${isActive ? "text-white/70" : "text-gray-400"}`} />
+                        <ChevronRight className={`h-4 w-4 ${isActive ? "text-white/70" : "text-gray-400 dark:text-gray-600"}`} />
                       </motion.button>
                     )
                   })}
                 </div>
 
-                <div className="p-4 border-t border-border">
+                <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
                   <button
                     onClick={toggleTheme}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/80 hover:bg-accent transition-all"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
                   >
                     {mounted && (theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />)}
                     <span className="font-medium">{mounted && (theme === "dark" ? "Modo Claro" : "Modo Oscuro")}</span>
