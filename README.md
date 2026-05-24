@@ -8,7 +8,7 @@
 
 **LectoRuta Saber** es una plataforma educativa interactiva desarrollada para la Corporación Universitaria Antonio José de Sucre (UAJS) con el objetivo de mejorar las competencias de lectura crítica y comprensión lectora en estudiantes de grados 10° y 11°.
 
-**Desarrollado por:** Alejandro Montes Pimienta  
+**Desarrollado por:** Alejandro Montes Pimienta  y Andres Lara
 **Institución:** Corporación Universitaria Antonio José de Sucre - UAJS  
 **Año:** 2025
 
