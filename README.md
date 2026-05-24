@@ -10,7 +10,7 @@
 
 **Desarrollado por:** Alejandro Montes Pimienta  y Andres Lara
 **Institución:** Corporación Universitaria Antonio José de Sucre - UAJS  
-**Año:** 2025
+**Año:** 2026
 
 ---
 
