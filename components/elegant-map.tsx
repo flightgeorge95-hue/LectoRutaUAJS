@@ -4,10 +4,7 @@ import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
 import { MapPin, Phone, Mail, Globe, Maximize2, Minimize2, Navigation } from "lucide-react"
 
-const MAP_BASE = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15749.949177007684!2d-75.41123433261723!3d9.29001745404082!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e59144c3bce079d%3A0x1dc8c9ee1d05562b!2sCorporaci%C3%B3n%20Universitaria%20Antonio%20Jos%C3%A9%20de%20Sucre%20-%20Sede%20C%20CORPOSUCRE"
-
-const DARK_PARAMS = "&hl=es&maptype=satellite"
-const LIGHT_PARAMS = "&hl=es"
+const MAP_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15749.949177007684!2d-75.41123433261723!3d9.29001745404082!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e59144c3bce079d%3A0x1dc8c9ee1d05562b!2sCorporaci%C3%B3n%20Universitaria%20Antonio%20Jos%C3%A9%20de%20Sucre%20-%20Sede%20C%20CORPOSUCRE!5e0!3m2!1ses-419!2sco!4v1759004337431!5m2!1ses-419!2sco"
 
 export function ElegantMap() {
   const { theme } = useTheme()
@@ -17,7 +14,7 @@ export function ElegantMap() {
 
   useEffect(() => { setMounted(true) }, [])
 
-  const src = `${MAP_BASE}${isDark ? DARK_PARAMS : LIGHT_PARAMS}`
+  const src = MAP_URL
 
   return (
     <div className={`relative transition-all duration-500 ${expanded ? "fixed inset-4 z-50" : ""}`}>
