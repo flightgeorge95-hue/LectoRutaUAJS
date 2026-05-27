@@ -94,7 +94,7 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
   const teacherSubject = resource.createdBy?.subject || "Lectura Crítica"
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-card border-border">
+    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 bg-white dark:bg-purple-950/40 border-purple-200 dark:border-purple-800">
       {/* Teacher header */}
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-center gap-3">
@@ -102,14 +102,14 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
             {teacherInitials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm text-foreground truncate">{teacherName}</p>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <p className="font-semibold text-sm text-purple-900 dark:text-purple-100 truncate">{teacherName}</p>
+            <div className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400">
               <span>{teacherSubject}</span>
               <span>·</span>
               <span>{timeAgo(resource.createdAt)}</span>
             </div>
           </div>
-          <Badge className="text-xs gap-1 bg-gray-100 dark:bg-card text-foreground border-0">
+          <Badge className="text-xs gap-1 bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 border-0">
             <div className={`h-1.5 w-1.5 rounded-full ${config.dot}`} />
             {config.label}
           </Badge>
@@ -118,16 +118,16 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
 
       {/* Title */}
       <div className="px-4 pb-2">
-        <h3 className="font-bold text-foreground text-base leading-snug">{resource.title}</h3>
+        <h3 className="font-bold text-base leading-snug text-purple-900 dark:text-purple-100">{resource.title}</h3>
       </div>
 
       {/* Content text */}
       <div className="px-4 pb-3">
-        <div className="text-sm text-muted-foreground leading-relaxed">
+        <div className="text-sm text-purple-700 dark:text-purple-300 leading-relaxed">
           {isLongContent && !expanded ? (
             <>
               {resource.content.substring(0, 180)}...
-              <button onClick={() => setExpanded(true)} className="text-primary font-semibold ml-1 hover:underline">
+              <button onClick={() => setExpanded(true)} className="text-purple-600 dark:text-purple-400 font-semibold ml-1 hover:underline">
                 Ver más
               </button>
             </>
@@ -135,7 +135,7 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
             resource.content.split("\n").map((p, i) => p.trim() ? <p key={i} className="mb-1.5 last:mb-0">{p}</p> : null)
           )}
           {isLongContent && expanded && (
-            <button onClick={() => setExpanded(false)} className="text-primary font-semibold hover:underline flex items-center gap-1 mt-1">
+            <button onClick={() => setExpanded(false)} className="text-purple-600 dark:text-purple-400 font-semibold hover:underline flex items-center gap-1 mt-1">
               <ChevronDown className="h-3 w-3 rotate-180" /> Ver menos
             </button>
           )}
@@ -145,7 +145,7 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
       {/* Video */}
       {videoId && (
         <div className="px-4 pb-3">
-          <div className="relative w-full max-w-md mx-auto rounded-xl overflow-hidden shadow-md border border-border bg-black">
+          <div className="relative w-full max-w-md mx-auto rounded-xl overflow-hidden shadow-md border border-purple-200 dark:border-purple-800 bg-black">
             <div className="aspect-video">
               <iframe
                 src={`https://www.youtube.com/embed/${videoId}`}
@@ -161,7 +161,7 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
       {/* Image */}
       {resource.type === "image" && resource.imageUrl && (
         <div className="px-4 pb-3">
-          <div className="rounded-xl overflow-hidden shadow-md border border-border max-w-md mx-auto">
+          <div className="rounded-xl overflow-hidden shadow-md border border-purple-200 dark:border-purple-800 max-w-md mx-auto">
             <img src={resource.imageUrl} alt={resource.title} className="w-full object-cover" />
           </div>
         </div>
@@ -170,22 +170,22 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
       {/* Tags */}
       <div className="px-4 pb-2">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <Badge variant="outline" className="text-xs h-6 border-purple-300 dark:border-purple-700 text-primary">{resource.category}</Badge>
+          <Badge variant="outline" className="text-xs h-6 border-purple-300 dark:border-purple-600 text-purple-800 dark:text-purple-200">{resource.category}</Badge>
           {resource.targetGrades?.map((g) => (
-            <Badge key={g} className="text-xs h-6 bg-purple-100 dark:bg-purple-900/40 text-primary border-0">Grado {g}°</Badge>
+            <Badge key={g} className="text-xs h-6 bg-purple-100 dark:bg-purple-800/50 text-purple-800 dark:text-purple-200 border-0">Grado {g}°</Badge>
           ))}
         </div>
       </div>
 
       {/* Actions */}
-      <div className="px-4 py-2.5 border-t border-border bg-gray-50/50 dark:bg-card/30 flex items-center gap-2">
+      <div className="px-4 py-2.5 border-t border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-900/20 flex items-center gap-2">
         <button
           onClick={() => handleAction("like")}
           disabled={loadingAction}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
             liked
               ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
-              : "hover:bg-gray-200 dark:hover:bg-gray-700 text-muted-foreground"
+              : "hover:bg-purple-200 dark:hover:bg-purple-800/40 text-purple-600 dark:text-purple-400"
           }`}
         >
           <Heart className={`h-4 w-4 transition-all ${liked ? "fill-current scale-110" : ""}`} />
@@ -199,7 +199,7 @@ function ResourceCard({ resource, studentId }: { resource: Resource; studentId: 
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
             saved
               ? "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
-              : "hover:bg-gray-200 dark:hover:bg-gray-700 text-muted-foreground"
+              : "hover:bg-purple-200 dark:hover:bg-purple-800/40 text-purple-600 dark:text-purple-400"
           }`}
         >
           {saved ? <BookmarkCheck className="h-4 w-4 fill-current" /> : <Bookmark className="h-4 w-4" />}
@@ -240,25 +240,25 @@ export function BibliotecaICFES({ studentId, studentGrade }: { studentId: string
 
   if (loading) {
     return (
-      <div className="rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-700 p-6 shadow-xl">
+      <div className="rounded-2xl border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/60 p-6 shadow-sm">
         <div className="flex items-center gap-2.5 mb-4">
-          <div className="h-9 w-9 rounded-xl bg-white/20 flex items-center justify-center">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-sm">
             <GraduationCap className="h-5 w-5 text-white" />
           </div>
-          <h2 className="text-xl font-bold text-white">Biblioteca ICFES 2026</h2>
+          <h2 className="text-xl font-bold text-purple-900 dark:text-white">Biblioteca ICFES 2026</h2>
         </div>
         <div className="space-y-4">
           {[1, 2].map((i) => (
-            <div key={i} className="rounded-xl bg-white/10 p-4 space-y-3 animate-pulse">
+            <div key={i} className="rounded-xl bg-white dark:bg-purple-900/30 p-4 space-y-3 animate-pulse border border-purple-100 dark:border-purple-800">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-white/20" />
+                <div className="h-10 w-10 rounded-full bg-purple-200 dark:bg-purple-700/50" />
                 <div className="space-y-1.5 flex-1">
-                  <div className="h-4 w-32 bg-white/20 rounded" />
-                  <div className="h-3 w-20 bg-white/15 rounded" />
+                  <div className="h-4 w-32 bg-purple-200 dark:bg-purple-700/50 rounded" />
+                  <div className="h-3 w-20 bg-purple-100 dark:bg-purple-800/50 rounded" />
                 </div>
               </div>
-              <div className="h-4 w-3/4 bg-white/15 rounded" />
-              <div className="h-32 w-full bg-white/10 rounded-lg" />
+              <div className="h-4 w-3/4 bg-purple-100 dark:bg-purple-800/50 rounded" />
+              <div className="h-32 w-full bg-purple-100 dark:bg-purple-900/30 rounded-lg" />
             </div>
           ))}
         </div>
@@ -267,27 +267,28 @@ export function BibliotecaICFES({ studentId, studentGrade }: { studentId: string
   }
 
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-6 shadow-xl animate-slide-up">
+    <div className="rounded-2xl border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/60 p-4 sm:p-6 shadow-sm animate-slide-up">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-sm">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-sm shrink-0">
               <GraduationCap className="h-5 w-5 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-white">Biblioteca ICFES 2026</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-purple-900 dark:text-white">Biblioteca ICFES 2026</h2>
           </div>
-          <p className="text-purple-200 text-sm mt-1 ml-12">
+          <p className="text-xs sm:text-sm text-purple-600 dark:text-purple-300 mt-1 ml-11">
             Tips, videos y guías de tus docentes para las pruebas Saber 11
           </p>
         </div>
         <Button
           onClick={() => setShowSaved(!showSaved)}
           size="sm"
-          className={`gap-1.5 rounded-full ${
+          variant={showSaved ? "default" : "outline"}
+          className={`gap-1.5 rounded-full shrink-0 text-xs sm:text-sm h-8 sm:h-9 ${
             showSaved
-              ? "bg-white text-purple-700 hover:bg-purple-50"
-              : "bg-white/20 text-white hover:bg-white/30 border-white/30"
+              ? "bg-purple-700 hover:bg-purple-800 text-white"
+              : "border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40"
           }`}
         >
           <BookmarkCheck className="h-3.5 w-3.5" />
@@ -302,10 +303,10 @@ export function BibliotecaICFES({ studentId, studentGrade }: { studentId: string
             <button
               key={tab.value}
               onClick={() => setFilter(tab.value)}
-              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 filter === tab.value
-                  ? "bg-white text-purple-700 shadow-md"
-                  : "bg-white/15 text-white hover:bg-white/25"
+                  ? "bg-purple-700 text-white shadow-sm"
+                  : "bg-purple-200/60 dark:bg-purple-800/40 text-purple-800 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-700/50"
               }`}
             >
               {tab.label}
@@ -316,14 +317,14 @@ export function BibliotecaICFES({ studentId, studentGrade }: { studentId: string
 
       {/* Content */}
       {filteredResources.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-10">
-          <div className="h-16 w-16 rounded-2xl bg-white/15 flex items-center justify-center mb-4">
-            <Newspaper className="h-8 w-8 text-white/50" />
+        <div className="flex flex-col items-center justify-center py-8 sm:py-10">
+          <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-purple-200 dark:bg-purple-800/40 flex items-center justify-center mb-4">
+            <Newspaper className="h-7 w-7 sm:h-8 sm:w-8 text-purple-400 dark:text-purple-500" />
           </div>
-          <p className="font-semibold text-white text-base">
+          <p className="font-semibold text-purple-900 dark:text-purple-100 text-sm sm:text-base">
             {showSaved ? "No tienes recursos guardados" : "Aún no hay recursos publicados"}
           </p>
-          <p className="text-purple-200 text-sm mt-1 text-center max-w-xs">
+          <p className="text-xs sm:text-sm text-purple-600 dark:text-purple-400 mt-1 text-center max-w-xs">
             {showSaved ? "Dale guardar a los recursos que te interesen" : "Tus docentes pronto compartirán tips y guías aquí"}
           </p>
         </div>
