@@ -2,14 +2,8 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedNavbar } from "@/components/animated-navbar"
-import dynamic from "next/dynamic"
-
-const WelcomeAudio = dynamic(
-  () => import("@/components/welcome-audio").then((m) => ({ default: m.WelcomeAudio })),
-  { ssr: false },
-)
-import { LazyMap } from "@/components/lazy-map"
-import { OptimizedImage } from "@/components/optimized-image"
+import { WelcomeAudio } from "@/components/welcome-audio"
+import { ElegantMap } from "@/components/elegant-map"
 import {
   Users,
   Trophy,
@@ -170,7 +164,7 @@ export default function HomePage() {
               <div className="relative order-first lg:order-last">
                 <div className="relative overflow-hidden rounded-2xl shadow-2xl bg-card">
                   <div className="relative w-full aspect-square">
-                    <OptimizedImage
+                    <Image
                       src={carouselImages[currentSlide].src || "/placeholder.svg"}
                       alt={carouselImages[currentSlide].alt}
                       fill
@@ -233,13 +227,13 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <div className="flex justify-center mb-6">
-                <OptimizedImage
+                <Image
                   src="/images/logo-uajs-horizontal.png"
                   alt="UAJS Logo Horizontal"
                   width={400}
                   height={120}
                   className="h-20 w-auto"
-                loading="lazy" />
+                />
               </div>
               <h2 className="text-4xl font-bold text-foreground mb-6 transition-colors duration-300">
                 Corporación Universitaria Antonio José de Sucre
@@ -394,7 +388,7 @@ export default function HomePage() {
             {/* Col 1: Brand */}
             <div>
               <div className="flex items-center gap-3 mb-5">
-                <OptimizedImage
+                <Image
                   src="/images/logo-uajs-vertical.jpg"
                   alt="UAJS Logo"
                   width={48}
@@ -473,7 +467,7 @@ export default function HomePage() {
             <div className="flex items-center gap-3 mb-6 justify-center">
               <h4 className="text-base font-semibold text-purple-900 dark:text-white text-center transition-colors duration-300">Nuestra Ubicación</h4>
             </div>
-            <LazyMap />
+            <ElegantMap />
           </div>
 
           {/* Copyright */}
