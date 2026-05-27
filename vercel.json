@@ -6,10 +6,6 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
-        },
-        {
-          "key": "Accept-Encoding",
-          "value": "br, gzip"
         }
       ]
     },
@@ -32,15 +28,6 @@
       ]
     },
     {
-      "source": "/fonts/(.+)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
       "source": "/(.*)",
       "headers": [
         {
@@ -52,28 +39,6 @@
           "value": "DENY"
         }
       ]
-    }
-  ],
-  "overrides": [
-    {
-      "path": "**/*.html",
-      "compression": "br"
-    },
-    {
-      "path": "**/*.js",
-      "compression": "br"
-    },
-    {
-      "path": "**/*.css",
-      "compression": "br"
-    },
-    {
-      "path": "**/*.json",
-      "compression": "br"
-    },
-    {
-      "path": "**/*.svg",
-      "compression": "br"
     }
   ]
 }
