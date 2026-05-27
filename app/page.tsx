@@ -465,9 +465,7 @@ export default function HomePage() {
           {/* Map Section */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-6 justify-center">
-              <div className="h-6 w-1 rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
               <h4 className="text-base font-semibold text-purple-900 dark:text-white text-center transition-colors duration-300">Nuestra Ubicación</h4>
-              <div className="h-6 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500" />
             </div>
             <ElegantMap />
           </div>
