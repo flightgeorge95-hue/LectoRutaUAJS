@@ -9,6 +9,7 @@ import {
   Clock, Star, Target, TrendingUp, Newspaper, Play, Lock, Award,
 } from "lucide-react"
 import Link from "next/link"
+import { OnboardingTutorial } from "@/components/onboarding-tutorial"
 
 interface StudentDashboardProps {
   studentData: any
@@ -157,6 +158,7 @@ export function StudentDashboard({ studentData }: StudentDashboardProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <OnboardingTutorial studentName={studentData?.firstName} />
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-sm safe-area-top">
         <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between">
