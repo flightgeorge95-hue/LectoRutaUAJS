@@ -15,6 +15,7 @@ const HIGHLIGHT_STYLES = [
   { bg: "bg-violet-100 dark:bg-violet-900/60", border: "border-violet-300 dark:border-violet-700", icon: "text-violet-700 dark:text-violet-300", text: "text-violet-800 dark:text-violet-200" },
   { bg: "bg-emerald-100 dark:bg-emerald-900/60", border: "border-emerald-300 dark:border-emerald-700", icon: "text-emerald-700 dark:text-emerald-300", text: "text-emerald-800 dark:text-emerald-200" },
   { bg: "bg-amber-100 dark:bg-amber-900/60", border: "border-amber-300 dark:border-amber-700", icon: "text-amber-700 dark:text-amber-300", text: "text-amber-800 dark:text-amber-200" },
+  { bg: "bg-orange-100 dark:bg-orange-900/60", border: "border-orange-300 dark:border-orange-700", icon: "text-orange-700 dark:text-orange-300", text: "text-orange-800 dark:text-orange-200" },
 ]
 
 const STEPS = [
