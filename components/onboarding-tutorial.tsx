@@ -8,6 +8,14 @@ import {
   ChevronRight, ChevronLeft, Sparkles, Zap, CheckCircle2,
 } from "lucide-react"
 
+const HIGHLIGHT_STYLES = [
+  { bg: "bg-violet-100 dark:bg-violet-900/60", border: "border-violet-300 dark:border-violet-700", icon: "text-violet-700 dark:text-violet-300", text: "text-violet-800 dark:text-violet-200" },
+  { bg: "bg-purple-100 dark:bg-purple-900/60", border: "border-purple-300 dark:border-purple-700", icon: "text-purple-700 dark:text-purple-300", text: "text-purple-800 dark:text-purple-200" },
+  { bg: "bg-indigo-100 dark:bg-indigo-900/60", border: "border-indigo-300 dark:border-indigo-700", icon: "text-indigo-700 dark:text-indigo-300", text: "text-indigo-800 dark:text-indigo-200" },
+  { bg: "bg-blue-100 dark:bg-blue-900/60", border: "border-blue-300 dark:border-blue-700", icon: "text-blue-700 dark:text-blue-300", text: "text-blue-800 dark:text-blue-200" },
+  { bg: "bg-cyan-100 dark:bg-cyan-900/60", border: "border-cyan-300 dark:border-cyan-700", icon: "text-cyan-700 dark:text-cyan-300", text: "text-cyan-800 dark:text-cyan-200" },
+]
+
 const STEPS = [
   {
     icon: Sparkles,
@@ -16,6 +24,7 @@ const STEPS = [
     title: "¡Bienvenido a LectoRuta Saber!",
     description:
       "Tu plataforma educativa para fortalecer lectura crítica y prepararte para las Pruebas Saber 11. Aquí aprenderás de forma divertida y gamificada.",
+    highlight: "Gana puntos y sube de nivel con cada taller que completes",
   },
   {
     icon: GraduationCap,
@@ -23,8 +32,8 @@ const STEPS = [
     emoji: "🎮",
     title: "Tu Portal Estudiante",
     description:
-      "Ingresa con tu Tarjeta de Identidad. Desde tu dashboard verás tu nivel, puntos, racha de estudio y todas las misiones asignadas por tus docentes.",
-    highlight: "Estadísticas en tiempo real de tu progreso",
+      "Esta es tu página principal. Aquí ves tu nivel, puntos, racha de estudio y todas las misiones que tus docentes te han asignado. Todo lo que necesitas está en un solo lugar.",
+    highlight: "Tus estadísticas y progreso se actualizan en tiempo real",
   },
   {
     icon: BookOpen,
@@ -244,10 +253,10 @@ export function OnboardingTutorial({ studentName }: OnboardingTutorialProps) {
                     initial={{ y: 8, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="mt-4 flex items-start gap-2.5 p-3.5 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30 border border-violet-200 dark:border-violet-800/50"
+                    className={`mt-4 flex items-start gap-2.5 p-3.5 rounded-xl border ${HIGHLIGHT_STYLES[step].bg} ${HIGHLIGHT_STYLES[step].border}`}
                   >
-                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-violet-600 dark:text-violet-400 mt-0.5 shrink-0" />
-                    <p className="text-xs sm:text-sm font-medium text-violet-700 dark:text-violet-300">
+                    <Sparkles className={`h-4 w-4 sm:h-5 sm:w-5 mt-0.5 shrink-0 ${HIGHLIGHT_STYLES[step].icon}`} />
+                    <p className={`text-xs sm:text-sm font-medium ${HIGHLIGHT_STYLES[step].text}`}>
                       {current.highlight}
                     </p>
                   </motion.div>
