@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedNavbar } from "@/components/animated-navbar"
 import { WelcomeAudio } from "@/components/welcome-audio"
+import { ElegantMap } from "@/components/elegant-map"
 import {
   Users,
   Trophy,
@@ -460,19 +461,12 @@ export default function HomePage() {
           </div>
 
           <div className="mb-8">
-            <h4 className="text-lg font-semibold mb-6 text-center transition-colors duration-300">Nuestra Ubicación</h4>
-            <div className="rounded-lg overflow-hidden shadow-lg">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15749.949177007684!2d-75.41123433261723!3d9.29001745404082!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e59144c3bce079d%3A0x1dc8c9ee1d05562b!2sCorporaci%C3%B3n%20Universitaria%20Antonio%20Jos%C3%A9%20de%20Sucre%20-%20Sede%20C%20CORPOSUCRE!5e0!3m2!1ses-419!2sco!4v1759004337431!5m2!1ses-419!2sco"
-                width="100%"
-                height="250"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Ubicación UAJS - Sincelejo, Sucre"
-              ></iframe>
+            <div className="flex items-center gap-3 mb-6 justify-center">
+              <div className="h-8 w-1 rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
+              <h4 className="text-lg font-semibold text-center transition-colors duration-300">Nuestra Ubicación</h4>
+              <div className="h-8 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500" />
             </div>
+            <ElegantMap />
           </div>
 
           <div className="border-t border-purple-600 dark:border-border mt-12 pt-8 text-center transition-colors duration-300">
