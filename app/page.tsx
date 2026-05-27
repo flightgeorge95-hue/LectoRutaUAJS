@@ -382,95 +382,99 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer id="contacto" className="bg-purple-700 dark:bg-purple-950 text-white py-16 transition-colors duration-300">
+      <footer id="contacto" className="bg-gray-50 dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-16 sm:py-20 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
+          <div className="grid md:grid-cols-3 gap-10 mb-10">
+            {/* Col 1: Brand */}
             <div>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-5">
                 <Image
                   src="/images/logo-uajs-vertical.jpg"
                   alt="UAJS Logo"
                   width={48}
                   height={48}
-                  className="rounded-lg bg-white/10 p-1"
+                  className="rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 p-1"
                 />
                 <div>
-                  <h3 className="text-xl font-bold transition-colors duration-300">LectoRuta Saber</h3>
-                  <p className="text-purple-200 text-muted-foreground transition-colors duration-300">
-                    UAJS - Plataforma Educativa
-                  </p>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white transition-colors duration-300">LectoRuta Saber</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">UAJS — Plataforma Educativa</p>
                 </div>
               </div>
-              <p className="text-purple-100 text-purple-100 leading-relaxed transition-colors duration-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-300">
                 Corporación Universitaria Antonio José de Sucre, institución comprometida con la excelencia educativa y
                 el desarrollo de competencias en lectura crítica para el éxito en las pruebas Saber 11.
               </p>
             </div>
 
+            {/* Col 2: Información */}
             <div>
-              <h4 className="text-lg font-semibold mb-6 transition-colors duration-300">Información Institucional</h4>
-              <div className="space-y-3 text-purple-100 text-muted-foreground transition-colors duration-300">
-                <p className="text-sm transition-colors duration-300">Vigilada Mineducación</p>
-                <p className="text-sm transition-colors duration-300">
-                  Resolución Personería Jurídica No. 2302 de 2003
-                </p>
-                <p className="text-sm transition-colors duration-300">Código SNIES 2850</p>
-                <p className="text-sm transition-colors duration-300">Registro Calificado Vigente</p>
-                <div className="pt-4">
-                  <div className="flex items-center gap-2 mb-2 transition-colors duration-300">
-                    <Globe className="h-4 w-4" />
-                    <span className="text-sm transition-colors duration-300">www.uajs.edu.co</span>
-                  </div>
+              <h4 className="text-base font-bold text-gray-900 dark:text-white mb-5 transition-colors duration-300">Información Institucional</h4>
+              <div className="space-y-3">
+                {["Vigilada Mineducación", "Resolución Personería Jurídica No. 2302 de 2003", "Código SNIES 2850", "Registro Calificado Vigente"].map((item) => (
+                  <p key={item} className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">{item}</p>
+                ))}
+                <div className="pt-2">
+                  <a href="https://www.uajs.edu.co" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors group">
+                    <Globe className="h-4 w-4 transition-transform group-hover:scale-110" />
+                    www.uajs.edu.co
+                  </a>
                 </div>
               </div>
             </div>
 
+            {/* Col 3: Contacto */}
             <div>
-              <h4 className="text-lg font-semibold mb-6 transition-colors duration-300">Contacto</h4>
-              <div className="space-y-4 text-purple-100 text-muted-foreground transition-colors duration-300">
+              <h4 className="text-base font-bold text-gray-900 dark:text-white mb-5 transition-colors duration-300">Contacto</h4>
+              <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm transition-colors duration-300">
-                    <p className="font-medium transition-colors duration-300">Sede Principal</p>
-                    <p className="transition-colors duration-300">Sincelejo, Calle 27 No 21-50</p>
-                    <p className="transition-colors duration-300">Barrio La María, Sucre</p>
+                  <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin className="h-4 w-4 text-purple-700 dark:text-purple-400" />
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="font-semibold text-gray-900 dark:text-gray-200">Sede Principal</p>
+                    <p>Sincelejo, Calle 27 No 21-50</p>
+                    <p>Barrio La María, Sucre</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm transition-colors duration-300">
-                    <p className="font-medium transition-colors duration-300">Sede E</p>
-                    <p className="transition-colors duration-300">Carrera 19 A # 28A - 109</p>
-                    <p className="transition-colors duration-300">Avenida Alfonso López</p>
+                  <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin className="h-4 w-4 text-purple-700 dark:text-purple-400" />
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="font-semibold text-gray-900 dark:text-gray-200">Sede E</p>
+                    <p>Carrera 19 A # 28A - 109</p>
+                    <p>Avenida Alfonso López</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 transition-colors duration-300">
-                  <Phone className="h-5 w-5" />
-                  <div className="text-sm transition-colors duration-300">
-                    <p>(5) 276 13 48 - 281 22 82</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0">
+                    <Phone className="h-4 w-4 text-purple-700 dark:text-purple-400" />
                   </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">(5) 276 13 48 - 281 22 82</span>
                 </div>
-                <div className="flex items-center gap-3 transition-colors duration-300">
-                  <Mail className="h-5 w-5" />
-                  <div className="text-sm transition-colors duration-300">
-                    <p>info@uajs.edu.co</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0">
+                    <Mail className="h-4 w-4 text-purple-700 dark:text-purple-400" />
                   </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">info@uajs.edu.co</span>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Map Section */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-6 justify-center">
-              <div className="h-8 w-1 rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
-              <h4 className="text-lg font-semibold text-center transition-colors duration-300">Nuestra Ubicación</h4>
-              <div className="h-8 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500" />
+              <div className="h-6 w-1 rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
+              <h4 className="text-base font-semibold text-gray-900 dark:text-white text-center transition-colors duration-300">Nuestra Ubicación</h4>
+              <div className="h-6 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500" />
             </div>
             <ElegantMap />
           </div>
 
-          <div className="border-t border-purple-600 dark:border-border mt-12 pt-8 text-center transition-colors duration-300">
-            <p className="text-purple-200 text-purple-200 text-sm transition-colors duration-300">
+          {/* Copyright */}
+          <div className="border-t border-gray-200 dark:border-gray-800 pt-8 text-center transition-colors duration-300">
+            <p className="text-sm text-gray-500 dark:text-gray-500 transition-colors duration-300">
               © 2026 Corporación Universitaria Antonio José de Sucre (UAJS). Todos los derechos reservados.
             </p>
           </div>

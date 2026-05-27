@@ -19,7 +19,7 @@ export function ElegantMap() {
   return (
     <div className={`relative transition-all duration-500 ${expanded ? "fixed inset-4 z-50" : ""}`}>
       {/* Card container */}
-      <div className={`relative rounded-2xl overflow-hidden shadow-xl border border-border/60 bg-card transition-all duration-500 ${expanded ? "h-full" : ""}`}>
+      <div className={`relative rounded-2xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-all duration-500 ${expanded ? "h-full" : ""}`}>
 
         {/* Decorative top accent */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 z-10" />
@@ -30,7 +30,7 @@ export function ElegantMap() {
             src={src}
             width="100%"
             height="100%"
-            style={{ border: 0, filter: isDark ? "brightness(0.85) saturate(0.9)" : "none" }}
+            style={{ border: 0, filter: isDark ? "grayscale(15%) invert(92%) hue-rotate(180deg) brightness(85%) contrast(80%)" : "none" }}
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
@@ -81,13 +81,13 @@ export function ElegantMap() {
 
         {/* Info footer */}
         {!expanded && (
-          <div className="px-4 py-3 flex items-center justify-between gap-4 bg-card">
+          <div className="px-4 py-3 flex items-center justify-between gap-4 bg-white dark:bg-gray-900">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="hidden sm:flex items-center gap-2 text-muted-foreground">
+              <div className="hidden sm:flex items-center gap-2 text-gray-500 dark:text-gray-400">
                 <Phone className="h-3.5 w-3.5" />
                 <span className="text-[11px]">(5) 276 13 48</span>
               </div>
-              <div className="hidden md:flex items-center gap-2 text-muted-foreground">
+              <div className="hidden md:flex items-center gap-2 text-gray-500 dark:text-gray-400">
                 <Mail className="h-3.5 w-3.5" />
                 <span className="text-[11px]">info@uajs.edu.co</span>
               </div>
