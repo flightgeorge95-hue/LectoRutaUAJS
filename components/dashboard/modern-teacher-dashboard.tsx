@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useRouter } from "next/navigation"
+import { TeacherOnboardingTutorial } from "@/components/teacher-onboarding-tutorial"
 
 interface ModernTeacherDashboardProps {
   userData: {
@@ -230,6 +231,7 @@ export function ModernTeacherDashboard({ userData }: ModernTeacherDashboardProps
 
   return (
     <div className="min-h-screen bg-background">
+      <TeacherOnboardingTutorial teacherName={userData.firstName} />
       {/* Header */}
       <div className="border-b bg-card sticky top-0 z-40 safe-area-top">
         <div className="container mx-auto px-3 sm:px-6 py-2.5 sm:py-4">
