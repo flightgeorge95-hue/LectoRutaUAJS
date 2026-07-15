@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   creator: "Alejandro Montes Pimienta",
   publisher: "Corporación Universitaria Antonio José de Sucre",
   icons: {
-    icon: "/images/logo-uajs-vertical.jpg",
-    shortcut: "/images/logo-uajs-vertical.jpg",
-    apple: "/images/logo-uajs-vertical.jpg",
+    icon: "/images/logo-uajs-emblema.png",
+    shortcut: "/images/logo-uajs-emblema.png",
+    apple: "/images/logo-uajs-emblema.png",
   },
 }
 

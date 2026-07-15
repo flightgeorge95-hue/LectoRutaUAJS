@@ -1,10 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { Database } from "@/lib/database"
 import { randomUUID } from "crypto"
-
-function generateSessionToken(): string {
-  return randomUUID()
-}
+import { createSessionToken, SESSION_COOKIE_NAME, sessionCookieOptions, type SessionPayload } from "@/lib/session"
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,16 +16,14 @@ export async function POST(request: NextRequest) {
     const ipAddress = request.headers.get("x-forwarded-for") || "unknown"
     const userAgent = request.headers.get("user-agent") || "unknown"
 
-    const admin = await Database.verifyAdminPassword(cedula, password)
+    const admin = (await Database.verifyAdminPassword(cedula, password)) as any
 
     if (!admin) {
       await Database.logLoginAttempt(cedula, false, ipAddress, userAgent)
       return NextResponse.json({ error: "Credenciales incorrectas" }, { status: 401 })
     }
 
-    const sessionToken = generateSessionToken()
-
-    const sessionData = {
+    const sessionData: SessionPayload = {
       userId: admin._id.toString(),
       userType: "admin",
       adminId: admin._id.toString(),
@@ -36,11 +31,10 @@ export async function POST(request: NextRequest) {
       lastName: admin.lastName,
       cedula: admin.cedula,
       email: admin.email,
-      expiresAt: Date.now() + 24 * 60 * 60 * 1000,
     }
 
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
-    await Database.createSession(admin._id.toString(), sessionToken, expiresAt, ipAddress, userAgent)
+    await Database.createSession(admin._id.toString(), randomUUID(), expiresAt, ipAddress, userAgent)
     await Database.logLoginAttempt(cedula, true, ipAddress, userAgent)
 
     const response = NextResponse.json({
@@ -49,13 +43,8 @@ export async function POST(request: NextRequest) {
       redirectUrl: "/dashboard/admin",
     })
 
-    const encodedSession = btoa(JSON.stringify(sessionData))
-    response.cookies.set("auth-session", encodedSession, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60,
-    })
+    const signedToken = await createSessionToken(sessionData)
+    response.cookies.set(SESSION_COOKIE_NAME, signedToken, sessionCookieOptions)
 
     return response
   } catch (error) {

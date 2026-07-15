@@ -14,9 +14,21 @@
 ### Sistema de Autenticación
 - Autenticación por cédula + contraseña para docentes
 - Autenticación por tarjeta de identidad para estudiantes
-- Sesiones con JWT y cookies httpOnly
-- Separación completa de roles (Estudiante/Docente)
+- Sesiones con JWT firmado (HS256, librería `jose`) en cookies httpOnly — el token se verifica criptográficamente en el middleware (`proxy.ts`), una cookie manipulada se rechaza
+- Contraseñas con hash bcrypt
+- Separación completa de roles (Estudiante/Docente/Admin)
 - Registro de intentos de login
+
+### Seguridad de Calificaciones
+- Las preguntas enviadas al estudiante NO incluyen la respuesta correcta ni la explicación (se eliminan en el servidor)
+- La calificación se calcula 100% en el servidor (`/api/workshops/complete`): el cliente solo envía qué opción eligió
+- La identidad del estudiante se toma de la sesión firmada, no del cuerpo de la petición (un estudiante no puede enviar resultados a nombre de otro)
+- La respuesta correcta y su explicación se revelan al estudiante solo DESPUÉS de finalizar el taller (retroalimentación pedagógica)
+
+### Asistente de Estudio "Sofía UAJS"
+- Asistente flotante en el dashboard del estudiante
+- Consejo del día (rotación diaria determinista)
+- Banco de estrategias curadas por las 3 competencias ICFES de Lectura Crítica + consejos para el día de la prueba
 
 ### Dashboard de Estudiantes
 - Estadísticas en tiempo real desde MongoDB (puntos, nivel, talleres completados)

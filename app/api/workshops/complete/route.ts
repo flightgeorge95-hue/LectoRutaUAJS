@@ -1,34 +1,78 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { Database } from "@/lib/database"
+import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/session"
 
+// La calificación ocurre 100% en el servidor: el cliente solo envía qué opción
+// eligió (índice) o su respuesta abierta. Nunca se confía en un "isCorrect"
+// calculado en el navegador.
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { studentId, workshopId, answers, timeSpent } = body
+    const cookie = request.cookies.get(SESSION_COOKIE_NAME)?.value
+    const session = cookie ? await verifySessionToken(cookie) : null
 
-    if (!studentId || !workshopId || !answers || !Array.isArray(answers)) {
+    if (!session || session.userType !== "student" || !session.studentId) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const { workshopId, answers, timeSpent } = body
+    // El studentId viene de la sesión firmada, no del body: un estudiante
+    // no puede enviar resultados a nombre de otro.
+    const studentId = session.studentId
+
+    if (!workshopId || !answers || !Array.isArray(answers)) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 })
     }
 
+    await Database.connect()
+    const questions = await Database.getQuestionsByWorkshop(workshopId)
+    const questionById = new Map<string, any>(questions.map((q: any) => [q._id.toString(), q]))
+
     let correctCount = 0
     let openQuestionsCount = 0
+    const perQuestion: Record<string, {
+      isCorrect: boolean
+      correctIndex: number
+      explanation: string
+      selectedIndex: number | null
+    }> = {}
 
     for (const answer of answers) {
       try {
-        const isOpen = answer.questionType === "open_ended"
+        const question = questionById.get(answer.questionId?.toString())
+        if (!question) continue
+
+        const isOpen = question.questionType === "open_ended"
         if (isOpen) openQuestionsCount++
+
+        let isCorrect = false
+        let selectedLetter = ""
+        let correctIndex = -1
+
+        if (!isOpen && Array.isArray(question.options)) {
+          const idx = typeof answer.selectedIndex === "number" ? answer.selectedIndex : -1
+          selectedLetter = question.options[idx]?.letter || ""
+          correctIndex = question.options.findIndex((opt: any) => opt.letter === question.correctAnswer)
+          isCorrect = selectedLetter !== "" && selectedLetter === question.correctAnswer
+          if (isCorrect) correctCount++
+        }
 
         await Database.recordStudentAnswer({
           studentId,
           workshopId,
           questionId: answer.questionId,
-          selectedAnswer: isOpen ? "open" : (answer.selectedAnswer || ""),
+          selectedAnswer: isOpen ? "open" : selectedLetter,
           openAnswer: isOpen ? (answer.openAnswer || "") : undefined,
-          isCorrect: isOpen ? false : (answer.isCorrect || false), // abiertas inician como false
+          isCorrect: isOpen ? false : isCorrect, // abiertas inician como false hasta que el docente califique
           timeSpent: answer.timeSpent || 0,
         })
 
-        if (!isOpen && answer.isCorrect) correctCount++
+        perQuestion[answer.questionId.toString()] = {
+          isCorrect,
+          correctIndex,
+          explanation: question.explanation || "",
+          selectedIndex: isOpen ? null : (typeof answer.selectedIndex === "number" ? answer.selectedIndex : null),
+        }
       } catch (err: any) {
         console.error(`[workshops/complete] Error guardando respuesta:`, err.message)
       }
@@ -54,6 +98,7 @@ export async function POST(request: NextRequest) {
       completion,
       hasOpenQuestions: hasOpen,
       status: hasOpen ? "pending_review" : "auto_graded",
+      perQuestion,
       results: {
         score: autoScore,
         correctAnswers: correctCount,

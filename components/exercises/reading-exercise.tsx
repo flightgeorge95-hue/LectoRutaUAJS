@@ -13,8 +13,10 @@ import { useRouter } from "next/navigation"
 
 interface Question {
   id: number; dbId?: string; text: string; options: string[]
-  correctAnswer: number; correctAnswerLetter?: string
-  explanation: string; competency: string; questionType?: string
+  // correctAnswer/explanation solo existen en ejercicios demo (mock).
+  // Los talleres reales se califican en el servidor y no exponen la respuesta.
+  correctAnswer?: number; correctAnswerLetter?: string
+  explanation?: string; competency: string; questionType?: string
 }
 interface Exercise {
   id: string; title: string; subject: string; competency: string
@@ -22,6 +24,15 @@ interface Exercise {
   passage: { title: string; content: string; type: string }
   questions: Question[]; _workshopId?: string; _isFromDB?: boolean
 }
+// Resultado calificado por el servidor, indexado por el _id de cada pregunta
+export interface GradedResults {
+  score: number
+  correctCount: number
+  mcCount: number
+  colombianGrade: number | null
+  perQuestion: Record<string, { isCorrect: boolean; selectedIndex: number | null; correctIndex?: number | null; explanation?: string }>
+}
+
 interface PreloadedCompletion {
   answers: Record<number, number>
   openAnswers: Record<number, string>
@@ -29,16 +40,18 @@ interface PreloadedCompletion {
   finalGrade: number | null
   status: string
   timeSpent: number
+  graded?: GradedResults | null
 }
 
 interface ReadingExerciseProps {
   exercise: Exercise; studentId?: string
   preloadedCompletion?: PreloadedCompletion | null
+  // Envía respuestas al servidor y devuelve la calificación oficial (null para demos)
   onComplete?: (results: {
-    answers: Record<number, number | string>
+    answers: Record<number, number>
     openAnswers: Record<number, string>
-    timeSpent: number; score: number; correctCount: number
-  }) => void
+    timeSpent: number
+  }) => Promise<GradedResults | null>
 }
 
 // ─── Confetti ────────────────────────────────────────────────────────────────
@@ -101,6 +114,8 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
   )
   const [isCompleted, setIsCompleted] = useState(!!preloadedCompletion)
   const [resultsSaved, setResultsSaved] = useState(!!preloadedCompletion)
+  const [submitting, setSubmitting] = useState(false)
+  const [graded, setGraded] = useState<GradedResults | null>(preloadedCompletion?.graded ?? null)
   const [showConfetti, setShowConfetti] = useState(false)
   const [phase, setPhase] = useState(preloadedCompletion ? 3 : 0) // skip animation in review mode
 
@@ -122,35 +137,68 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
 
   const fmt = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`
 
+  // Correctitud de una pregunta: primero la calificación oficial del servidor;
+  // el cálculo local solo aplica a ejercicios demo (que sí traen correctAnswer)
+  const isQuestionCorrect = (q: Question): boolean => {
+    if (graded?.perQuestion && q.dbId) return graded.perQuestion[q.dbId]?.isCorrect ?? false
+    return q.correctAnswer !== undefined && answers[q.id] === q.correctAnswer
+  }
+
   // Open questions NEVER count as auto-correct
   const calculateResults = () => {
+    if (graded) {
+      const colombianGrade = preloadedCompletion?.finalGrade != null
+        ? preloadedCompletion.finalGrade
+        : graded.colombianGrade
+      return {
+        correct: graded.correctCount, mcCount: graded.mcCount,
+        total: exercise.questions.length, percentage: graded.score,
+        colombianGrade: colombianGrade ?? parseFloat((1.0 + (graded.score / 100) * 4.0).toFixed(1)),
+      }
+    }
     let correct = 0, mcCount = 0
     exercise.questions.forEach((q) => {
-      if (isMC(q)) { mcCount++; if (answers[q.id] === q.correctAnswer) correct++ }
+      if (isMC(q)) { mcCount++; if (isQuestionCorrect(q)) correct++ }
     })
     const pct = mcCount > 0 ? Math.round((correct / mcCount) * 100) : 0
-    // In review mode use stored finalGrade if teacher already graded, else recalculate
     const colombianGrade = preloadedCompletion?.finalGrade != null
       ? preloadedCompletion.finalGrade
       : parseFloat((1.0 + (pct / 100) * 4.0).toFixed(1))
     return { correct, mcCount, total: exercise.questions.length, percentage: pct, colombianGrade }
   }
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
+    if (submitting || isCompleted) return
+    const timeSpent = exercise.timeLimit * 60 - timeLeft
+
+    let serverResults: GradedResults | null = null
+    if (onComplete && !resultsSaved) {
+      setResultsSaved(true)
+      setSubmitting(true)
+      try {
+        serverResults = await onComplete({ answers, openAnswers, timeSpent })
+      } finally {
+        setSubmitting(false)
+      }
+      if (serverResults) setGraded(serverResults)
+    }
+
     setIsCompleted(true)
-    const r = calculateResults()
-    if (r.colombianGrade >= 3.0 && r.mcCount > 0) {
+    // Con calificación del servidor, usarla para decidir el confeti
+    const pct = serverResults ? serverResults.score : (() => {
+      let correct = 0, mcCount = 0
+      exercise.questions.forEach((q) => { if (isMC(q)) { mcCount++; if (isQuestionCorrect(q)) correct++ } })
+      return mcCount > 0 ? Math.round((correct / mcCount) * 100) : 0
+    })()
+    const grade = serverResults?.colombianGrade ?? parseFloat((1.0 + (pct / 100) * 4.0).toFixed(1))
+    const mcTotal = serverResults ? serverResults.mcCount : exercise.questions.filter(isMC).length
+    if (grade >= 3.0 && mcTotal > 0) {
       setShowConfetti(true)
       setTimeout(() => setShowConfetti(false), 5000)
     }
     setTimeout(() => setPhase(1), 400)
     setTimeout(() => setPhase(2), 1200)
     setTimeout(() => setPhase(3), 2000)
-    const timeSpent = exercise.timeLimit * 60 - timeLeft
-    if (onComplete && !resultsSaved) {
-      setResultsSaved(true)
-      onComplete({ answers, openAnswers, timeSpent, score: r.percentage, correctCount: r.correct })
-    }
   }
 
   const handleNext = () => {
@@ -158,6 +206,18 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
     else handleFinish()
   }
   const handlePrev = () => { if (currentQuestion > 0) setCurrentQuestion(q => q - 1) }
+
+  // ─── SUBMITTING (esperando calificación del servidor) ────────────────────
+  if (submitting) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 mx-auto rounded-full border-4 border-violet-800 border-t-violet-400 animate-spin" />
+          <p className="text-slate-300 font-medium">Calificando tu taller...</p>
+        </div>
+      </div>
+    )
+  }
 
   // ─── RESULTS / REWARD SCREEN ─────────────────────────────────────────────
   if (isCompleted) {
@@ -249,7 +309,7 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
               {exercise.questions.map((q, i) => {
                 const isOpen = isOpenQ(q)
                 const mc = isMC(q)
-                const correct = mc && answers[q.id] === q.correctAnswer
+                const correct = mc && isQuestionCorrect(q)
                 const answered = mc ? answers[q.id] !== undefined : (openAnswers[q.id]?.trim().length ?? 0) > 0
 
                 return (
@@ -283,9 +343,22 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
                         </p>
                       )}
                       {mc && !correct && answered && (
-                        <p className="text-[9px] sm:text-xs text-red-400 mt-0.5 truncate">
-                          Tu resp: {q.options[answers[q.id]]}
-                        </p>
+                        <>
+                          <p className="text-[9px] sm:text-xs text-red-400 mt-0.5 truncate">
+                            Tu resp: {q.options[answers[q.id]]}
+                          </p>
+                          {(() => {
+                            // Tras calificar, el servidor revela la opción correcta y su explicación
+                            const g = q.dbId ? graded?.perQuestion?.[q.dbId] : null
+                            const ci = g?.correctIndex
+                            return ci != null && ci >= 0 ? (
+                              <p className="text-[9px] sm:text-xs text-emerald-400/90 mt-0.5">
+                                Correcta: {q.options[ci]}
+                                {g?.explanation ? <span className="block text-slate-400 mt-0.5">{g.explanation}</span> : null}
+                              </p>
+                            ) : null
+                          })()}
+                        </>
                       )}
                       {mc && !answered && (
                         <p className="text-[9px] sm:text-xs text-slate-500 mt-0.5">Sin respuesta</p>

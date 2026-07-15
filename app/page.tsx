@@ -72,11 +72,11 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-4">
               <Image
-                src="/images/logo-uajs-vertical.jpg"
-                alt="UAJS Logo"
+                src="/images/logo-uajs-emblema.png"
+                alt="Emblema Corporación Universitaria Antonio José de Sucre"
                 width={50}
                 height={50}
-                className="rounded-lg shadow-sm sm:w-[60px] sm:h-[60px]"
+                className="sm:w-[60px] sm:h-[60px]"
               />
               <div>
                 <h1 className="text-lg sm:text-2xl font-bold text-foreground transition-colors duration-300">
@@ -109,7 +109,7 @@ export default function HomePage() {
                   <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed text-justify transition-colors duration-300">
                     Plataforma educativa innovadora de la Corporación Universitaria Antonio José de Sucre. Desarrolla
                     tus competencias en lectura crítica y prepárate exitosamente para las pruebas Saber 11 con
-                    metodología especializada y asistente virtual inteligente.
+                    metodología especializada y el asistente de estudio "Sofía UAJS".
                   </p>
                 </div>
 
@@ -139,7 +139,7 @@ export default function HomePage() {
                       <Brain className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
                     </div>
                     <p className="text-xs sm:text-sm font-semibold text-foreground/80 transition-colors duration-300">
-                      IA Avanzada
+                      Asistente Sofía
                     </p>
                   </div>
                   <div className="flex flex-col items-start">
@@ -310,8 +310,8 @@ export default function HomePage() {
                 Plataforma LectoRuta Saber
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto transition-colors duration-300">
-                Accede a nuestra plataforma educativa especializada en lectura crítica con tecnología de vanguardia y
-                asistente virtual inteligente "Sofía UAJS".
+                Accede a nuestra plataforma educativa especializada en lectura crítica con talleres interactivos,
+                gamificación y el asistente de estudio "Sofía UAJS".
               </p>
             </div>
 
@@ -389,8 +389,8 @@ export default function HomePage() {
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <Image
-                  src="/images/logo-uajs-vertical.jpg"
-                  alt="UAJS Logo"
+                  src="/images/logo-uajs-emblema.png"
+                  alt="Emblema Corporación Universitaria Antonio José de Sucre"
                   width={48}
                   height={48}
                   className="rounded-xl bg-white dark:bg-purple-900/50 shadow-sm border border-purple-200 dark:border-purple-800 p-1"

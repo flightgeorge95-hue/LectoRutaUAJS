@@ -154,6 +154,8 @@ export default function ExercisePage() {
           content: questions.map((q: any) => q.referenceText).filter((text: string, index: number, arr: string[]) => arr.indexOf(text) === index).join("\n\n"),
           type: questions[0]?.textType || "Continuo informativo",
         },
+        // El servidor ya no envía correctAnswer ni explanation a estudiantes:
+        // la calificación llega desde /api/workshops/complete al finalizar.
         questions: questions.map((q: any, index: number) => ({
           id: index + 1,
           dbId: q._id,
@@ -161,11 +163,6 @@ export default function ExercisePage() {
           options: q.questionType === "multiple_choice" && q.options
             ? q.options.map((opt: any) => opt.text)
             : [],
-          correctAnswer: q.questionType === "multiple_choice" && q.options
-            ? q.options.findIndex((opt: any) => opt.letter === q.correctAnswer)
-            : -1,
-          correctAnswerLetter: q.correctAnswer,
-          explanation: q.explanation || "Sin explicación disponible.",
           competency: q.competence || "Lectura Crítica",
           questionType: q.questionType,
         })),
@@ -184,18 +181,27 @@ export default function ExercisePage() {
             // Map DB answers (letter) back to index for each question
             const answers: Record<number, number> = {}
             const openAnswers: Record<number, string> = {}
+            // La correctitud viene de la BD (calificada por el servidor), no se recalcula aquí
+            const perQuestion: Record<string, { isCorrect: boolean; selectedIndex: number | null }> = {}
+            let correctCount = 0
+            let mcCount = 0
 
             transformedExercise.questions.forEach((q: any) => {
               const dbId = q.dbId?.toString()
               const prev = compData.answersByQuestionId[dbId]
+              const isOpen = q.questionType === "open_ended"
+              if (!isOpen) mcCount++
               if (!prev) return
-              if (q.questionType === "open_ended") {
+              if (isOpen) {
                 openAnswers[q.id] = prev.openAnswer || ""
+                perQuestion[dbId] = { isCorrect: false, selectedIndex: null }
               } else {
                 // selectedAnswer is a letter (A/B/C/D), convert to index
                 const letterToIdx: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 }
                 const idx = letterToIdx[prev.selectedAnswer?.toUpperCase()]
                 if (idx !== undefined) answers[q.id] = idx
+                perQuestion[dbId] = { isCorrect: !!prev.isCorrect, selectedIndex: idx ?? null }
+                if (prev.isCorrect) correctCount++
               }
             })
 
@@ -206,6 +212,13 @@ export default function ExercisePage() {
               finalGrade: compData.completion.finalGrade,
               status: compData.completion.status,
               timeSpent: compData.completion.timeSpent,
+              graded: {
+                score: compData.completion.score,
+                correctCount,
+                mcCount,
+                colombianGrade: compData.completion.finalGrade ?? null,
+                perQuestion,
+              },
             })
           }
         }
@@ -260,37 +273,49 @@ export default function ExercisePage() {
       studentId={studentId}
       preloadedCompletion={preloadedCompletion}
       onComplete={async (results) => {
-        if (exercise._isFromDB && studentId) {
-          try {
-            const answersPayload = exercise.questions.map((q: any) => {
-              const isOpen = q.questionType === "open_ended"
-              return {
-                questionId: q.dbId,
-                questionType: q.questionType || "multiple_choice",
-                selectedAnswer: isOpen ? "open" : (results.answers[q.id]?.toString() || ""),
-                openAnswer: isOpen ? (results.openAnswers?.[q.id] || "") : undefined,
-                isCorrect: isOpen ? false : results.answers[q.id] === q.correctAnswer,
-                timeSpent: 0,
-              }
-            })
-
-            const response = await fetch("/api/workshops/complete", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                studentId,
-                workshopId: exercise._workshopId,
-                answers: answersPayload,
-                timeSpent: results.timeSpent || 0,
-              }),
-            })
-
-            if (!response.ok) {
-              console.error("[exercise/complete] Error al guardar resultados")
+        // Solo talleres reales se envían al servidor; el demo se califica localmente
+        if (!exercise._isFromDB) return null
+        try {
+          // Se envía únicamente lo que el estudiante respondió (índice de opción
+          // o texto libre); el servidor decide qué es correcto y calcula la nota.
+          const answersPayload = exercise.questions.map((q: any) => {
+            const isOpen = q.questionType === "open_ended"
+            return {
+              questionId: q.dbId,
+              selectedIndex: isOpen ? null : (results.answers[q.id] ?? null),
+              openAnswer: isOpen ? (results.openAnswers?.[q.id] || "") : undefined,
+              timeSpent: 0,
             }
-          } catch (err) {
-            console.error("[exercise/complete] Error:", err)
+          })
+
+          const response = await fetch("/api/workshops/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              workshopId: exercise._workshopId,
+              answers: answersPayload,
+              timeSpent: results.timeSpent || 0,
+            }),
+          })
+
+          if (!response.ok) {
+            console.error("[exercise/complete] Error al guardar resultados")
+            return null
           }
+
+          const data = await response.json()
+          if (!data.success) return null
+
+          return {
+            score: data.results.score,
+            correctCount: data.results.correctAnswers,
+            mcCount: data.results.totalQuestions - data.results.openQuestionsCount,
+            colombianGrade: data.results.finalGrade,
+            perQuestion: data.perQuestion || {},
+          }
+        } catch (err) {
+          console.error("[exercise/complete] Error:", err)
+          return null
         }
       }}
     />

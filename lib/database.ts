@@ -4,15 +4,7 @@ import bcrypt from "bcryptjs"
 // MongoDB connection string
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/lectosaber"
 
-console.log("═══════════════════════════════════════════════════════════")
-console.log("📦 [DATABASE] LectoRuta Saber - Sistema de Base de Datos")
-console.log("═══════════════════════════════════════════════════════════")
-console.log(
-  `🔗 [DATABASE] URI de conexión: ${MONGODB_URI.includes("@") ? "MongoDB Atlas (Nube ☁️)" : "MongoDB Local (💻 localhost:27017)"}`,
-)
-console.log("💡 [DATABASE] Para conectar con MongoDB Compass:")
-console.log(`   URI: ${MONGODB_URI}`)
-console.log("═══════════════════════════════════════════════════════════\n")
+// Nunca imprimir MONGODB_URI: contiene credenciales y quedaría expuesta en los logs del servidor
 
 // User Schema
 const userSchema = new mongoose.Schema({

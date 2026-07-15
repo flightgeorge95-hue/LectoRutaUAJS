@@ -90,11 +90,10 @@ export default function PrincipiosValoresPage() {
             </Button>
             <div className="flex items-center gap-4">
               <Image
-                src="/images/logo-uajs-vertical.jpg"
+                src="/images/logo-uajs-emblema.png"
                 alt="UAJS Logo"
                 width={50}
                 height={50}
-                className="rounded-lg shadow-sm"
               />
               <div>
                 <h1 className="text-xl font-bold text-foreground">Principios y Valores</h1>

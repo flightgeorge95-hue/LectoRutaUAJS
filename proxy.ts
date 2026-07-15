@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { verifySessionToken, SESSION_COOKIE_NAME, type SessionPayload } from "@/lib/session"
 
 // Rutas de página protegidas y el rol requerido
 const PAGE_ROUTES: { path: string; role: string }[] = [
@@ -25,21 +26,16 @@ const API_ROUTES: { path: string; roles: string[] }[] = [
   { path: "/api/user", roles: ["student", "teacher", "admin"] },
 ]
 
-function getSession(request: NextRequest): any | null {
-  const cookie = request.cookies.get("auth-session")?.value
+async function getSession(request: NextRequest): Promise<SessionPayload | null> {
+  const cookie = request.cookies.get(SESSION_COOKIE_NAME)?.value
   if (!cookie) return null
-  try {
-    const session = JSON.parse(atob(cookie))
-    if (!session?.expiresAt || session.expiresAt < Date.now()) return null
-    return session
-  } catch {
-    return null
-  }
+  // Verifica firma HMAC y expiración del JWT — una cookie manipulada se rechaza aquí
+  return verifySessionToken(cookie)
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const session = getSession(request)
+  const session = await getSession(request)
 
   // Verificar rutas de página
   for (const route of PAGE_ROUTES) {

@@ -2,10 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { Database } from "@/lib/database"
 import bcrypt from "bcryptjs"
 import { randomUUID } from "crypto"
-
-function generateSessionToken(): string {
-  return randomUUID()
-}
+import { createSessionToken, SESSION_COOKIE_NAME, sessionCookieOptions, type SessionPayload } from "@/lib/session"
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +17,7 @@ export async function POST(request: NextRequest) {
     const ipAddress = request.headers.get("x-forwarded-for") || "unknown"
     const userAgent = request.headers.get("user-agent") || "unknown"
 
-    const student = await Database.findStudentByTarjeta(tarjetaIdentidad)
+    const student = (await Database.findStudentByTarjeta(tarjetaIdentidad)) as any
 
     if (!student) {
       await Database.logLoginAttempt(tarjetaIdentidad, false, ipAddress, userAgent)
@@ -33,9 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Contraseña incorrecta" }, { status: 401 })
     }
 
-    const sessionToken = generateSessionToken()
-
-    const sessionData = {
+    const sessionData: SessionPayload = {
       userId: student._id.toString(),
       userType: "student",
       studentId: student._id.toString(),
@@ -45,11 +40,10 @@ export async function POST(request: NextRequest) {
       tarjetaIdentidad: student.tarjetaIdentidad,
       points: student.points || 0,
       level: student.level || 1,
-      expiresAt: Date.now() + 24 * 60 * 60 * 1000,
     }
 
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
-    await Database.createSession(student._id.toString(), sessionToken, expiresAt, ipAddress, userAgent)
+    await Database.createSession(student._id.toString(), randomUUID(), expiresAt, ipAddress, userAgent)
     await Database.logLoginAttempt(tarjetaIdentidad, true, ipAddress, userAgent)
 
     const response = NextResponse.json({
@@ -58,13 +52,8 @@ export async function POST(request: NextRequest) {
       redirectUrl: "/dashboard/student",
     })
 
-    const encodedSession = btoa(JSON.stringify(sessionData))
-    response.cookies.set("auth-session", encodedSession, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60,
-    })
+    const signedToken = await createSessionToken(sessionData)
+    response.cookies.set(SESSION_COOKIE_NAME, signedToken, sessionCookieOptions)
 
     return response
   } catch (error) {

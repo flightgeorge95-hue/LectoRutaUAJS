@@ -2,10 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { Database } from "@/lib/database"
 import bcrypt from "bcryptjs"
 import { randomUUID } from "crypto"
-
-function generateSessionToken(): string {
-  return randomUUID()
-}
+import { createSessionToken, SESSION_COOKIE_NAME, sessionCookieOptions, type SessionPayload } from "@/lib/session"
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +17,7 @@ export async function POST(request: NextRequest) {
     const ipAddress = request.headers.get("x-forwarded-for") || "unknown"
     const userAgent = request.headers.get("user-agent") || "unknown"
 
-    const teacher = await Database.findTeacherByCedula(cedula)
+    const teacher = (await Database.findTeacherByCedula(cedula)) as any
 
     if (!teacher) {
       await Database.logLoginAttempt(cedula, false, ipAddress, userAgent)
@@ -34,9 +31,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Contraseña incorrecta" }, { status: 401 })
     }
 
-    const sessionToken = generateSessionToken()
-
-    const sessionData = {
+    const sessionData: SessionPayload = {
       userId: teacher._id.toString(),
       userType: "teacher",
       teacherId: teacher._id.toString(),
@@ -46,11 +41,10 @@ export async function POST(request: NextRequest) {
       institution: teacher.institution,
       subject: teacher.subject,
       gradesTeaching: teacher.gradesTeaching || [10, 11],
-      expiresAt: Date.now() + 24 * 60 * 60 * 1000,
     }
 
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
-    await Database.createSession(teacher._id.toString(), sessionToken, expiresAt, ipAddress, userAgent)
+    await Database.createSession(teacher._id.toString(), randomUUID(), expiresAt, ipAddress, userAgent)
     await Database.logLoginAttempt(cedula, true, ipAddress, userAgent)
 
     const response = NextResponse.json({
@@ -59,13 +53,8 @@ export async function POST(request: NextRequest) {
       redirectUrl: "/dashboard/teacher",
     })
 
-    const encodedSession = btoa(JSON.stringify(sessionData))
-    response.cookies.set("auth-session", encodedSession, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60,
-    })
+    const signedToken = await createSessionToken(sessionData)
+    response.cookies.set(SESSION_COOKIE_NAME, signedToken, sessionCookieOptions)
 
     return response
   } catch (error) {

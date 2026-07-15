@@ -1,20 +1,10 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
+import { SESSION_COOKIE_NAME } from "@/lib/session"
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const sessionCookie = request.cookies.get("auth-session")?.value
-
-    if (sessionCookie) {
-      try {
-        const sessionData = JSON.parse(atob(sessionCookie))
-        // Session invalidation would happen here with database
-      } catch (error) {
-        // Invalid session data, continue with logout
-      }
-    }
-
     const response = NextResponse.json({ success: true })
-    response.cookies.set("auth-session", "", {
+    response.cookies.set(SESSION_COOKIE_NAME, "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { Database } from "@/lib/database"
+import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/session"
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,7 +10,6 @@ export async function GET(request: NextRequest) {
     if (!workshopId) {
       return NextResponse.json({ error: "workshopId requerido" }, { status: 400 })
     }
-
 
     await Database.connect()
 
@@ -24,11 +24,24 @@ export async function GET(request: NextRequest) {
     // Get questions for this workshop
     const questions = await Database.getQuestionsByWorkshop(workshopId)
 
+    // Los estudiantes NUNCA reciben la respuesta correcta ni la explicación:
+    // la calificación ocurre en el servidor (/api/workshops/complete).
+    // Docentes y admin sí las reciben (las necesitan para editar/revisar).
+    const cookie = request.cookies.get(SESSION_COOKIE_NAME)?.value
+    const session = cookie ? await verifySessionToken(cookie) : null
+    const isStaff = session?.userType === "teacher" || session?.userType === "admin"
+
+    const safeQuestions = isStaff
+      ? questions
+      : questions.map((q: any) => {
+          const { correctAnswer, explanation, ...rest } = q
+          return rest
+        })
 
     return NextResponse.json({
       success: true,
       workshop,
-      questions,
+      questions: safeQuestions,
     })
   } catch (error: any) {
     console.error("Error interno:", error?.message || error)

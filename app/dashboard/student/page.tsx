@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { StudentDashboard } from "@/components/dashboard/student-dashboard"
 import { StudentLogin } from "@/components/auth/student-login"
+import { SofiaAssistant } from "@/components/assistant/sofia-assistant"
 import { motion, AnimatePresence } from "framer-motion"
 import { BookOpen } from "lucide-react"
 
@@ -140,6 +141,7 @@ export default function StudentDashboardPage() {
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
           <StudentDashboard studentData={userData} />
+          <SofiaAssistant studentName={userData?.firstName} />
         </motion.div>
       )}
     </AnimatePresence>
