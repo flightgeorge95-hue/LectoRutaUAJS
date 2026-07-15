@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
     if (!workshopData.createdBy) missingFields.push("createdBy")
 
     if (missingFields.length > 0) {
-      console.error("Error interno:", error?.message || error)
       return NextResponse.json(
         { error: `Faltan campos requeridos: ${missingFields.join(", ")}` },
         { status: 400 }
@@ -25,8 +24,16 @@ export async function POST(request: NextRequest) {
     // Ensure grade is a number and valid
     const grade = Number(workshopData.grade)
     if (![10, 11].includes(grade)) {
-      console.error("Error interno:", error?.message || error)
       return NextResponse.json({ error: "El grado debe ser 10 u 11" }, { status: 400 })
+    }
+
+    // Fecha límite opcional: validar formato si viene
+    let dueDate: Date | null = null
+    if (workshopData.dueDate) {
+      dueDate = new Date(workshopData.dueDate)
+      if (isNaN(dueDate.getTime())) {
+        return NextResponse.json({ error: "Fecha límite inválida" }, { status: 400 })
+      }
     }
 
     // Build clean workshop object
@@ -37,6 +44,7 @@ export async function POST(request: NextRequest) {
       grade: grade,
       difficulty: workshopData.difficulty || "Intermedio",
       createdBy: workshopData.createdBy,
+      dueDate,
     }
 
 

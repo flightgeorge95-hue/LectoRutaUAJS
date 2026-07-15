@@ -24,6 +24,7 @@ const workshopSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher", required: true },
   isActive: { type: Boolean, default: true },
   assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }], // Estudiantes asignados
+  dueDate: { type: Date, default: null }, // Fecha límite de entrega (opcional)
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
@@ -425,6 +426,7 @@ export class Database {
     grade: number
     difficulty: string
     createdBy: string
+    dueDate?: Date | null
   }) {
     try {
       await this.connect()

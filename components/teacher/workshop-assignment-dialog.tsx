@@ -54,6 +54,7 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
   const [subject, setSubject] = useState("Lectura Crítica")
   const [grade, setGrade] = useState<number>(10)
   const [difficulty, setDifficulty] = useState("Intermedio")
+  const [dueDate, setDueDate] = useState("") // formato YYYY-MM-DD del input date
 
   // Questions
   const [questions, setQuestions] = useState<Question[]>([])
@@ -188,6 +189,8 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
         grade: Number(grade),
         difficulty,
         createdBy: teacherId,
+        // Mediodía local para evitar que la zona horaria corra la fecha un día
+        dueDate: dueDate ? new Date(`${dueDate}T12:00:00`).toISOString() : null,
       }
 
 
@@ -264,6 +267,7 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
       setStep(1)
       setTitle("")
       setDescription("")
+      setDueDate("")
       setQuestions([])
       setSelectedStudents([])
     } catch (error) {
@@ -348,6 +352,20 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dueDate">Fecha límite de entrega (opcional)</Label>
+                <Input
+                  id="dueDate"
+                  type="date"
+                  value={dueDate}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Los estudiantes la verán en su agenda. Déjala vacía si el taller no tiene fecha de vencimiento.
+                </p>
               </div>
 
               <Button onClick={() => setStep(2)} className="w-full">

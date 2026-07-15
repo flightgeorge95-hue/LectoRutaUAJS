@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { OnboardingTutorial } from "@/components/onboarding-tutorial"
+import { StudentAgenda } from "@/components/dashboard/student-agenda"
 
 interface StudentDashboardProps {
   studentData: any
@@ -133,6 +134,28 @@ export function StudentDashboard({ studentData }: StudentDashboardProps) {
 
   const pendingWorkshops = workshops.filter((w) => !completedIds.has(w._id?.toString()))
 
+  // Entrega más urgente (para personalizar el saludo del hero)
+  const msPerDay = 86400000
+  const startOfToday = new Date(new Date().setHours(0, 0, 0, 0)).getTime()
+  const dueDays = (w: any) => Math.round((new Date(new Date(w.dueDate).setHours(0, 0, 0, 0)).getTime() - startOfToday) / msPerDay)
+  const urgentWorkshop = pendingWorkshops
+    .filter((w) => w.dueDate)
+    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())[0]
+  const urgentDiff = urgentWorkshop ? dueDays(urgentWorkshop) : null
+
+  const heroMessage =
+    urgentWorkshop && urgentDiff !== null && urgentDiff < 0
+      ? `⚠️ "${urgentWorkshop.title}" está vencido — ¡complétalo cuanto antes!`
+      : urgentWorkshop && urgentDiff === 0
+      ? `⏰ "${urgentWorkshop.title}" vence HOY — ¡a por él!`
+      : urgentWorkshop && urgentDiff === 1
+      ? `📅 "${urgentWorkshop.title}" vence mañana`
+      : pendingWorkshops.length > 0
+      ? `Tienes ${pendingWorkshops.length} taller${pendingWorkshops.length > 1 ? "es" : ""} pendiente${pendingWorkshops.length > 1 ? "s" : ""} — ¡tú puedes!`
+      : completedWorkshops > 0
+      ? "¡Increíble! Completaste todos tus talleres 🎉"
+      : "Prepárate para conquistar las Pruebas ICFES"
+
   const isBadgeUnlocked = (badge: (typeof BADGES)[0]) => {
     const val =
       badge.field === "completedWorkshops" ? completedWorkshops
@@ -216,13 +239,7 @@ export function StudentDashboard({ studentData }: StudentDashboardProps) {
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1">
                 ¡Hola, {studentData?.firstName}! 👋
               </h1>
-              <p className="text-purple-200 text-xs sm:text-sm">
-                {pendingWorkshops.length > 0
-                  ? `Tienes ${pendingWorkshops.length} taller${pendingWorkshops.length > 1 ? "es" : ""} pendiente${pendingWorkshops.length > 1 ? "s" : ""} — ¡tú puedes!`
-                  : completedWorkshops > 0
-                  ? "¡Increíble! Completaste todos tus talleres 🎉"
-                  : "Prepárate para conquistar las Pruebas ICFES"}
-              </p>
+              <p className="text-purple-200 text-xs sm:text-sm">{heroMessage}</p>
             </div>
             {/* Level circle */}
             <div className="text-center flex-shrink-0">
@@ -275,6 +292,9 @@ export function StudentDashboard({ studentData }: StudentDashboardProps) {
             </motion.div>
           ))}
         </div>
+
+        {/* ── Mi Agenda (entregas con fecha límite) ── */}
+        <StudentAgenda workshops={workshops} completedIds={completedIds} />
 
         {/* ── Mis Misiones (Talleres) ── */}
         <section>
@@ -357,6 +377,22 @@ export function StudentDashboard({ studentData }: StudentDashboardProps) {
                       <span>{w.questionCount} preguntas</span>
                     </div>
                   )}
+
+                  {/* Fecha límite (solo si el docente la definió y aún no está entregado) */}
+                  {w.dueDate && !isDone && (() => {
+                    const diff = dueDays(w)
+                    const dueLabel = new Date(w.dueDate).toLocaleDateString("es-CO", { day: "numeric", month: "short" })
+                    return (
+                      <span className={`inline-flex items-center gap-1 self-start text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                        diff < 0 ? "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
+                        : diff <= 1 ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
+                        : "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300"
+                      }`}>
+                        <Clock className="w-2.5 h-2.5" />
+                        {diff < 0 ? `Venció ${dueLabel}` : diff === 0 ? "Vence hoy" : diff === 1 ? "Vence mañana" : `Vence ${dueLabel}`}
+                      </span>
+                    )
+                  })()}
 
                   {isDone && completion && (
                     <div className={`rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 text-center ${
