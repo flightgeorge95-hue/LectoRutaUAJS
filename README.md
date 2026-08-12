@@ -168,27 +168,21 @@ Consulta el [Manual de Usuario](MANUAL_USUARIO.md) para más soluciones.
 
 ## 📞 Soporte
 
-**Desarrollador:** Alejandro Montes Pimienta  
+**Desarrolladores:** Alejandro Montes Pimienta  & Andres Lara
 **Institución:** Corporación Universitaria Antonio José de Sucre - UAJS  
-**Email:** [Tu correo electrónico]
+**Email:** alejandro.montes.pimienta@gmail.com
 
 ---
 
 ## 📄 Licencia
 
-© 2025 Alejandro Montes Pimienta - Corporación Universitaria Antonio José de Sucre (UAJS)  
+© 2026 Alejandro Montes Pimienta & Andres Lara - Corporación Universitaria Antonio José de Sucre (UAJS)  
 Todos los derechos reservados.
 
 Este software es propiedad exclusiva de su autor y la institución UAJS. No está permitida su distribución, modificación o uso comercial sin autorización expresa.
 
 ---
 
-## 🙏 Agradecimientos
-
-- Corporación Universitaria Antonio José de Sucre (UAJS)
-- Estudiantes y docentes que participaron en las pruebas
-- Comunidad de código abierto por las herramientas utilizadas
+**Desarrollado con ❤️ para mejorar la educación en Colombia**
 
 ---
-
-**Desarrollado con ❤️ para mejorar la educación en Colombia**
