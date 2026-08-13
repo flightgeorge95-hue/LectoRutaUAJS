@@ -762,10 +762,10 @@ export class Database {
       const teacherCount = await Teacher.countDocuments()
 
       if (studentCount > 0 || teacherCount > 0) {
-        console.log("ℹ️  [DATABASE] Base de datos ya inicializada")
+        console.log("ℹ  [DATABASE] Base de datos ya inicializada")
         console.log(`   📚 Estudiantes existentes: ${studentCount}`)
         console.log(`   👨‍🏫 Docentes existentes: ${teacherCount}`)
-        console.log("   ⏭️  Omitiendo inicialización de estudiantes/docentes...\n")
+        console.log("   ⏭  Omitiendo inicialización de estudiantes/docentes...\n")
 
         // Siempre verificar y crear admin por defecto si no existe
         const adminCount = await Admin.countDocuments()

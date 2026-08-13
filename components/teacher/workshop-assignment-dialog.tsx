@@ -383,9 +383,7 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="timeLimitMinutes">
-                    Tiempo límite (minutos){type === "taller" ? " — opcional" : ""}
-                  </Label>
+                  <Label htmlFor="timeLimitMinutes">Tiempo límite (min)</Label>
                   <Input
                     id="timeLimitMinutes"
                     type="number"
@@ -396,11 +394,11 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
                   />
                 </div>
               </div>
-              {type !== "taller" && (
-                <p className="text-xs text-muted-foreground -mt-2">
-                  El cronómetro será obligatorio: el {type} se enviará automáticamente al agotarse el tiempo.
-                </p>
-              )}
+              <p className="text-xs text-muted-foreground -mt-2">
+                {type === "taller"
+                  ? "Opcional: déjalo vacío para que el taller no tenga cronómetro."
+                  : `El cronómetro será obligatorio: el ${type} se enviará automáticamente al agotarse el tiempo.`}
+              </p>
 
               <div className="space-y-2">
                 <Label htmlFor="dueDate">Fecha límite de entrega (opcional)</Label>

@@ -157,7 +157,7 @@ export async function GET(request: NextRequest) {
     })
 
     const columns = [
-      { header: "N°", key: "n", width: 5 },
+      { header: "N°", key: "n", width: 9 },
       { header: "Nombre completo", key: "name", width: 28 },
       { header: "Grado", key: "grade", width: 7 },
       { header: "Edad", key: "age", width: 7 },
@@ -181,10 +181,12 @@ export async function GET(request: NextRequest) {
       const logoPath = path.join(process.cwd(), "public", "images", "logo-uajs-emblema.png")
       const logoBuffer = fs.readFileSync(logoPath)
       const imageId = workbook.addImage({ buffer: logoBuffer as any, extension: "png" })
-      sheet.addImage(imageId, { tl: { col: 0.15, row: 0.15 }, ext: { width: 70, height: 70 } })
+      // Cabe dentro de la columna A (ancho 9 ≈ 68px) para no invadir el texto de B1.
+      sheet.addImage(imageId, { tl: { col: 0.2, row: 0.25 }, ext: { width: 52, height: 52 } })
     } catch {
       // Si el logo no está disponible, el reporte se genera igual sin él.
     }
+    for (let r = 1; r <= 4; r++) sheet.getRow(r).height = 18
 
     sheet.mergeCells("B1:F1")
     sheet.getCell("B1").value = "Corporación Universitaria Antonio José de Sucre (UAJS)"
