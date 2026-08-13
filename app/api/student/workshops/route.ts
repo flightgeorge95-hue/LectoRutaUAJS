@@ -60,21 +60,45 @@ export async function GET(request: NextRequest) {
       return b && b.total > 0 ? Math.round((b.correct / b.total) * 100) : 0
     }
 
-    // Mapa workshopId → datos de completación (estado + nota)
+    // Fecha desde la que cuenta "completado" para cada taller: si el docente
+    // reactivó el taller (activatedAt más reciente que la entrega vieja), esa
+    // entrega vieja ya no cuenta y el taller vuelve a aparecer como pendiente.
+    const activatedAtByWorkshop: Record<string, number> = {}
+    for (const w of workshops as any[]) {
+      const wId = w._id?.toString() || ""
+      if (wId) activatedAtByWorkshop[wId] = w.activatedAt ? new Date(w.activatedAt).getTime() : 0
+    }
+
+    // Mapa workshopId → datos de completación (estado + nota) — solo cuenta
+    // la entrega más reciente si ocurrió después de la última (re)activación.
     const completionByWorkshop: Record<string, { status: string; finalGrade: number | null; score: number; completionId: string }> = {}
     for (const c of completions) {
       const wId = c.workshopId?._id?.toString() || c.workshopId?.toString() || ""
-      if (wId && !completionByWorkshop[wId]) {
-        completionByWorkshop[wId] = {
-          completionId: c._id?.toString() || "",
-          status: (c as any).status || "auto_graded",
-          finalGrade: (c as any).finalGrade ?? null,
-          score: c.score || 0,
-        }
+      if (!wId || completionByWorkshop[wId]) continue
+      const activatedAt = activatedAtByWorkshop[wId] ?? 0
+      const completedAt = c.completedAt ? new Date(c.completedAt).getTime() : 0
+      if (completedAt < activatedAt) continue // entrega vieja, ya no cuenta tras reactivación
+      completionByWorkshop[wId] = {
+        completionId: c._id?.toString() || "",
+        status: (c as any).status || "auto_graded",
+        finalGrade: (c as any).finalGrade ?? null,
+        score: c.score || 0,
       }
     }
 
     const completedWorkshopIds = Object.keys(completionByWorkshop)
+
+    // Talleres caducados: tenían fecha límite, ya pasó, y no se completaron
+    // desde la última activación. Se marcan para que el frontend los muestre
+    // como "caducado" (el backend igual bloquea el acceso en /detail y /complete).
+    const now = Date.now()
+    const workshopsWithExpiry = (workshops as any[]).map((w) => {
+      const wId = w._id?.toString() || ""
+      const isDone = !!completionByWorkshop[wId]
+      const dueTs = w.dueDate ? new Date(w.dueDate).getTime() : null
+      const expired = !isDone && dueTs !== null && now > dueTs
+      return { ...w, expired }
+    })
 
     const recentActivity = completions.slice(0, 5).map((c: any) => ({
       id: c._id?.toString() || "",
@@ -86,7 +110,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      workshops: workshops || [],
+      workshops: workshopsWithExpiry || [],
       completedWorkshopIds,
       completionByWorkshop,
       stats: {

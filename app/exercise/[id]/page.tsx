@@ -148,7 +148,10 @@ export default function ExercisePage() {
         subject: workshop.subject || "Lectura Crítica",
         competency: questions[0]?.competence || "Lectura Crítica",
         grade: workshop.grade || 11,
-        timeLimit: Math.max(questions.length * 5, 15),
+        // Taller sin tiempo límite explícito = sin cronómetro. Examen/simulacro
+        // siempre traen timeLimitMinutes (validado al crearlos).
+        timeLimit: workshop.timeLimitMinutes ?? null,
+        type: workshop.type || "taller",
         passage: {
           title: workshop.title,
           content: questions.map((q: any) => q.referenceText).filter((text: string, index: number, arr: string[]) => arr.indexOf(text) === index).join("\n\n"),

@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { BookOpen, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -28,6 +30,14 @@ interface WorkshopItem {
   subject: string
   difficulty: string
   grade: number
+  type?: "taller" | "examen" | "simulacro"
+}
+
+const TYPE_LABEL: Record<string, string> = { taller: "Taller", examen: "Examen", simulacro: "Simulacro" }
+const TYPE_COLOR: Record<string, string> = {
+  taller: "bg-slate-100 text-slate-700 border-slate-200",
+  examen: "bg-red-100 text-red-700 border-red-200",
+  simulacro: "bg-violet-100 text-violet-700 border-violet-200",
 }
 
 export function QuickAssignDialog({
@@ -39,6 +49,8 @@ export function QuickAssignDialog({
   const [workshops, setWorkshops] = useState<WorkshopItem[]>([])
   const [loading, setLoading] = useState(false)
   const [assigning, setAssigning] = useState<string | null>(null)
+  // Fecha+hora límite opcional (input datetime-local). Vacío = no caduca.
+  const [dueDateTime, setDueDateTime] = useState("")
 
   const fetchWorkshops = async () => {
     setLoading(true)
@@ -66,11 +78,15 @@ export function QuickAssignDialog({
       const res = await fetch("/api/workshops/assign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workshopId, studentIds: [studentId] }),
+        body: JSON.stringify({
+          workshopId,
+          studentIds: [studentId],
+          dueDate: dueDateTime ? new Date(dueDateTime).toISOString() : null,
+        }),
       })
       const data = await res.json()
       if (data.success) {
-        toast.success("Taller asignado exitosamente")
+        toast.success("Taller asignado/reactivado exitosamente")
         setOpen(false)
       } else {
         toast.error(data.error || "Error al asignar el taller")
@@ -107,9 +123,22 @@ export function QuickAssignDialog({
         <DialogHeader>
           <DialogTitle>Asignar Taller a {studentName}</DialogTitle>
           <DialogDescription>
-            Selecciona un taller ya creado para asignarlo a este estudiante
+            Selecciona un taller ya creado para asignarlo (o reactivarlo) a este estudiante
           </DialogDescription>
         </DialogHeader>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="quickDueDate">Fecha y hora límite (opcional)</Label>
+          <Input
+            id="quickDueDate"
+            type="datetime-local"
+            value={dueDateTime}
+            onChange={(e) => setDueDateTime(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Déjala vacía para que no caduque. Si el estudiante ya lo había completado, esto lo reactiva.
+          </p>
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-10">
@@ -130,6 +159,12 @@ export function QuickAssignDialog({
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{workshop.title}</p>
                     <div className="mt-1 flex flex-wrap gap-1.5">
+                      <Badge
+                        variant="outline"
+                        className={`text-xs px-1.5 py-0 ${TYPE_COLOR[workshop.type || "taller"]}`}
+                      >
+                        {TYPE_LABEL[workshop.type || "taller"]}
+                      </Badge>
                       <Badge variant="outline" className="text-xs px-1.5 py-0">
                         {workshop.subject}
                       </Badge>

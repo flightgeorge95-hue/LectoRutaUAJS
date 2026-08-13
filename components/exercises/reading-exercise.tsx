@@ -20,7 +20,10 @@ interface Question {
 }
 interface Exercise {
   id: string; title: string; subject: string; competency: string
-  grade: number; timeLimit: number
+  grade: number
+  // null = taller sin cronómetro (tiempo libre). Examen/simulacro siempre traen minutos.
+  timeLimit: number | null
+  type?: "taller" | "examen" | "simulacro"
   passage: { title: string; content: string; type: string }
   questions: Question[]; _workshopId?: string; _isFromDB?: boolean
 }
@@ -109,9 +112,14 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>(preloadedCompletion?.answers ?? {})
   const [openAnswers, setOpenAnswers] = useState<Record<number, string>>(preloadedCompletion?.openAnswers ?? {})
+  const isTimed = exercise.timeLimit != null
   const [timeLeft, setTimeLeft] = useState(
-    preloadedCompletion ? Math.max(0, exercise.timeLimit * 60 - preloadedCompletion.timeSpent) : exercise.timeLimit * 60
+    !isTimed ? 0
+      : preloadedCompletion ? Math.max(0, exercise.timeLimit! * 60 - preloadedCompletion.timeSpent)
+      : exercise.timeLimit! * 60
   )
+  // Para talleres sin cronómetro, el tiempo usado se mide con reloj real.
+  const [startedAt] = useState(() => Date.now())
   const [isCompleted, setIsCompleted] = useState(!!preloadedCompletion)
   const [resultsSaved, setResultsSaved] = useState(!!preloadedCompletion)
   const [submitting, setSubmitting] = useState(false)
@@ -126,14 +134,15 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
   const isLast = currentQuestion === exercise.questions.length - 1
   const progress = Math.round(((currentQuestion + 1) / exercise.questions.length) * 100)
 
-  // Timer
+  // Timer — solo corre en exámenes/simulacros (o talleres con tiempo límite explícito)
   useEffect(() => {
-    if (timeLeft > 0 && !isCompleted) {
+    if (!isTimed || isCompleted) return
+    if (timeLeft > 0) {
       const t = setTimeout(() => setTimeLeft(s => s - 1), 1000)
       return () => clearTimeout(t)
     }
-    if (timeLeft === 0 && !isCompleted) handleFinish()
-  }, [timeLeft, isCompleted])
+    if (timeLeft === 0) handleFinish()
+  }, [timeLeft, isCompleted, isTimed])
 
   const fmt = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`
 
@@ -169,7 +178,7 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
 
   const handleFinish = async () => {
     if (submitting || isCompleted) return
-    const timeSpent = exercise.timeLimit * 60 - timeLeft
+    const timeSpent = isTimed ? exercise.timeLimit! * 60 - timeLeft : Math.round((Date.now() - startedAt) / 1000)
 
     let serverResults: GradedResults | null = null
     if (onComplete && !resultsSaved) {
@@ -222,7 +231,7 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
   // ─── RESULTS / REWARD SCREEN ─────────────────────────────────────────────
   if (isCompleted) {
     const r = calculateResults()
-    const timeUsed = exercise.timeLimit * 60 - timeLeft
+    const timeUsed = isTimed ? exercise.timeLimit! * 60 - timeLeft : Math.round((Date.now() - startedAt) / 1000)
     const hasOpen = exercise.questions.some(isOpenQ)
     const openCount = exercise.questions.filter(isOpenQ).length
     const gc = gradeColor(hasOpen ? 1 : r.colombianGrade)
@@ -408,18 +417,34 @@ export function ReadingExercise({ exercise, studentId, preloadedCompletion, onCo
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xs sm:text-sm font-bold text-white truncate">{exercise.title}</h1>
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-xs sm:text-sm font-bold text-white truncate">{exercise.title}</h1>
+              {(exercise.type === "examen" || exercise.type === "simulacro") && (
+                <span className={cn(
+                  "shrink-0 text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide",
+                  exercise.type === "examen" ? "bg-red-950 text-red-300 border border-red-800" : "bg-violet-950 text-violet-300 border border-violet-800"
+                )}>
+                  {exercise.type}
+                </span>
+              )}
+            </div>
             <p className="text-[9px] sm:text-xs text-slate-400">{exercise.subject} · Grado {exercise.grade}°</p>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <div className={cn(
-              "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold border",
-              timeLeft < 60 ? "bg-red-950 border-red-700 text-red-300 animate-pulse"
-              : timeLeft < 300 ? "bg-amber-950 border-amber-700 text-amber-300"
-              : "bg-slate-800 border-slate-700 text-slate-300"
-            )}>
-              <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> <span className="hidden xs:inline">{fmt(timeLeft)}</span><span className="xs:hidden">{Math.floor(timeLeft / 60)}m</span>
-            </div>
+            {isTimed ? (
+              <div className={cn(
+                "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold border",
+                timeLeft < 60 ? "bg-red-950 border-red-700 text-red-300 animate-pulse"
+                : timeLeft < 300 ? "bg-amber-950 border-amber-700 text-amber-300"
+                : "bg-slate-800 border-slate-700 text-slate-300"
+              )}>
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> <span className="hidden xs:inline">{fmt(timeLeft)}</span><span className="xs:hidden">{Math.floor(timeLeft / 60)}m</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold border bg-slate-800 border-slate-700 text-slate-400">
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> <span className="hidden xs:inline">Sin límite</span>
+              </div>
+            )}
             <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold bg-slate-800 border border-slate-700 text-slate-300">
               {currentQuestion + 1}/{exercise.questions.length}
             </div>

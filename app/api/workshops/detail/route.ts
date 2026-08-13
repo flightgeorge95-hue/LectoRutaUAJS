@@ -31,6 +31,18 @@ export async function GET(request: NextRequest) {
     const session = cookie ? await verifySessionToken(cookie) : null
     const isStaff = session?.userType === "teacher" || session?.userType === "admin"
 
+    // Si el taller tenía fecha límite y ya pasó (sin entrega desde la última
+    // reactivación), el estudiante no puede ni siquiera cargarlo.
+    if (session?.userType === "student" && session.studentId) {
+      const expired = await Database.isWorkshopExpiredForStudent(workshopId, session.studentId)
+      if (expired) {
+        return NextResponse.json(
+          { error: "Este taller ha caducado. Pídele a tu docente que lo reactive." },
+          { status: 403 }
+        )
+      }
+    }
+
     const safeQuestions = isStaff
       ? questions
       : questions.map((q: any) => {

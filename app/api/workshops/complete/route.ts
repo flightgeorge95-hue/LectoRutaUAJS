@@ -25,6 +25,17 @@ export async function POST(request: NextRequest) {
     }
 
     await Database.connect()
+
+    // Defensa en profundidad: aunque el estudiante ya haya cargado el taller,
+    // si caducó mientras lo resolvía no se acepta el envío.
+    const expired = await Database.isWorkshopExpiredForStudent(workshopId, studentId)
+    if (expired) {
+      return NextResponse.json(
+        { error: "Este taller ha caducado. Pídele a tu docente que lo reactive." },
+        { status: 403 }
+      )
+    }
+
     const questions = await Database.getQuestionsByWorkshop(workshopId)
     const questionById = new Map<string, any>(questions.map((q: any) => [q._id.toString(), q]))
 

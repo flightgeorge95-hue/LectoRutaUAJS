@@ -55,6 +55,8 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
   const [grade, setGrade] = useState<number>(10)
   const [difficulty, setDifficulty] = useState("Intermedio")
   const [dueDate, setDueDate] = useState("") // formato YYYY-MM-DD del input date
+  const [type, setType] = useState<"taller" | "examen" | "simulacro">("taller")
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState("")
 
   // Questions
   const [questions, setQuestions] = useState<Question[]>([])
@@ -165,6 +167,11 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
       return
     }
 
+    if ((type === "examen" || type === "simulacro") && !timeLimitMinutes) {
+      toast.error("Los exámenes y simulacros requieren un tiempo límite en minutos")
+      return
+    }
+
     // Validate questions
     for (let i = 0; i < questions.length; i++) {
       const q = questions[i]
@@ -182,6 +189,8 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
 
     setLoading(true)
     try {
+      // Mediodía local para evitar que la zona horaria corra la fecha un día
+      const dueDateIso = dueDate ? new Date(`${dueDate}T12:00:00`).toISOString() : null
       const workshopPayload = {
         title,
         description,
@@ -189,8 +198,9 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
         grade: Number(grade),
         difficulty,
         createdBy: teacherId,
-        // Mediodía local para evitar que la zona horaria corra la fecha un día
-        dueDate: dueDate ? new Date(`${dueDate}T12:00:00`).toISOString() : null,
+        dueDate: dueDateIso,
+        type,
+        timeLimitMinutes: timeLimitMinutes ? Number(timeLimitMinutes) : null,
       }
 
 
@@ -251,6 +261,7 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
         body: JSON.stringify({
           workshopId: workshopId,
           studentIds: selectedStudents,
+          dueDate: dueDateIso,
         }),
       })
 
@@ -268,6 +279,8 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
       setTitle("")
       setDescription("")
       setDueDate("")
+      setType("taller")
+      setTimeLimitMinutes("")
       setQuestions([])
       setSelectedStudents([])
     } catch (error) {
@@ -353,6 +366,41 @@ export function WorkshopAssignmentDialog({ teacherId }: { teacherId: string }) {
                   </Select>
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="type">Tipo</Label>
+                  <Select value={type} onValueChange={(v) => setType(v as typeof type)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="taller">Taller (práctica, sin cronómetro)</SelectItem>
+                      <SelectItem value="examen">Examen (cronometrado)</SelectItem>
+                      <SelectItem value="simulacro">Simulacro Saber 11 (cronometrado)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="timeLimitMinutes">
+                    Tiempo límite (minutos){type === "taller" ? " — opcional" : ""}
+                  </Label>
+                  <Input
+                    id="timeLimitMinutes"
+                    type="number"
+                    min={1}
+                    placeholder={type === "taller" ? "Sin límite" : "Ej: 60"}
+                    value={timeLimitMinutes}
+                    onChange={(e) => setTimeLimitMinutes(e.target.value)}
+                  />
+                </div>
+              </div>
+              {type !== "taller" && (
+                <p className="text-xs text-muted-foreground -mt-2">
+                  El cronómetro será obligatorio: el {type} se enviará automáticamente al agotarse el tiempo.
+                </p>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="dueDate">Fecha límite de entrega (opcional)</Label>

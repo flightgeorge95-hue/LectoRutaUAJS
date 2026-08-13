@@ -36,6 +36,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Tipo de taller: taller normal, examen o simulacro
+    const type = ["taller", "examen", "simulacro"].includes(workshopData.type) ? workshopData.type : "taller"
+
+    // Tiempo límite en minutos: obligatorio en la práctica para examen/simulacro
+    let timeLimitMinutes: number | null = null
+    if (workshopData.timeLimitMinutes !== undefined && workshopData.timeLimitMinutes !== null && workshopData.timeLimitMinutes !== "") {
+      timeLimitMinutes = Number(workshopData.timeLimitMinutes)
+      if (isNaN(timeLimitMinutes) || timeLimitMinutes <= 0) {
+        return NextResponse.json({ error: "El tiempo límite debe ser un número de minutos mayor a 0" }, { status: 400 })
+      }
+    }
+    if ((type === "examen" || type === "simulacro") && !timeLimitMinutes) {
+      return NextResponse.json({ error: "Los exámenes y simulacros requieren un tiempo límite en minutos" }, { status: 400 })
+    }
+
     // Build clean workshop object
     const cleanWorkshopData = {
       title: workshopData.title.trim(),
@@ -45,6 +60,8 @@ export async function POST(request: NextRequest) {
       difficulty: workshopData.difficulty || "Intermedio",
       createdBy: workshopData.createdBy,
       dueDate,
+      type,
+      timeLimitMinutes,
     }
 
 

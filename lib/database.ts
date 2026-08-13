@@ -21,13 +21,32 @@ const workshopSchema = new mongoose.Schema({
   subject: { type: String, required: true }, // "Lectura Crítica", "Matemáticas", etc.
   grade: { type: Number, required: true, enum: [10, 11] }, // Solo grados 10 y 11
   difficulty: { type: String, enum: ["Básico", "Intermedio", "Avanzado"], default: "Intermedio" },
+  // "taller": practica normal, sin cronómetro obligatorio.
+  // "examen": evaluación calificada con tiempo límite.
+  // "simulacro": simulacro tipo Saber 11, con tiempo límite.
+  type: { type: String, enum: ["taller", "examen", "simulacro"], default: "taller" },
+  timeLimitMinutes: { type: Number, default: null }, // obligatorio en la práctica para examen/simulacro
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher", required: true },
   isActive: { type: Boolean, default: true },
   assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }], // Estudiantes asignados
-  dueDate: { type: Date, default: null }, // Fecha límite de entrega (opcional)
+  dueDate: { type: Date, default: null }, // Fecha límite de entrega global (opcional, retrocompatibilidad)
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
+
+// Workshop Assignment Schema — asignación individual taller/estudiante.
+// Permite fecha+hora límite por estudiante y "reactivar" un taller ya
+// completado (el docente vuelve a asignarlo, activatedAt se actualiza a
+// ahora y el taller reaparece como pendiente aunque tenga entregas viejas).
+const workshopAssignmentSchema = new mongoose.Schema({
+  workshopId: { type: mongoose.Schema.Types.ObjectId, ref: "Workshop", required: true },
+  studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student", required: true },
+  assignedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
+  dueDate: { type: Date, default: null }, // fecha+hora límite específica; null = no caduca
+  activatedAt: { type: Date, default: Date.now }, // se actualiza en cada (re)asignación
+  createdAt: { type: Date, default: Date.now },
+})
+workshopAssignmentSchema.index({ workshopId: 1, studentId: 1 }, { unique: true })
 
 // Question Schema
 const questionSchema = new mongoose.Schema({
@@ -194,6 +213,8 @@ const StudentProgress = mongoose.models.StudentProgress || mongoose.model("Stude
 const WorkshopCompletion =
   mongoose.models.WorkshopCompletion || mongoose.model("WorkshopCompletion", workshopCompletionSchema)
 const Resource = mongoose.models.Resource || mongoose.model("Resource", resourceSchema)
+const WorkshopAssignment =
+  mongoose.models.WorkshopAssignment || mongoose.model("WorkshopAssignment", workshopAssignmentSchema)
 
 export class Database {
   static async connect() {
@@ -427,6 +448,8 @@ export class Database {
     difficulty: string
     createdBy: string
     dueDate?: Date | null
+    type?: "taller" | "examen" | "simulacro"
+    timeLimitMinutes?: number | null
   }) {
     try {
       await this.connect()
@@ -979,12 +1002,38 @@ export class Database {
     }
   }
 
-  static async assignWorkshopToStudents(workshopId: string, studentIds: string[]) {
+  // Asigna (o reactiva) un taller para uno o varios estudiantes. Cada llamada
+  // sobreescribe la fecha límite y "activatedAt" de la asignación individual,
+  // lo que permite al docente reactivar un taller viejo para un estudiante
+  // puntual sin afectar las asignaciones de los demás.
+  static async assignWorkshopToStudents(
+    workshopId: string,
+    studentIds: string[],
+    opts: { dueDate?: Date | null; assignedBy?: string } = {}
+  ) {
     try {
       await this.connect()
       await Workshop.findByIdAndUpdate(workshopId, {
         $addToSet: { assignedTo: { $each: studentIds } },
       })
+
+      const now = new Date()
+      await Promise.all(
+        studentIds.map((studentId) =>
+          WorkshopAssignment.findOneAndUpdate(
+            { workshopId, studentId },
+            {
+              workshopId,
+              studentId,
+              assignedBy: opts.assignedBy || undefined,
+              dueDate: opts.dueDate ?? null,
+              activatedAt: now,
+            },
+            { upsert: true, new: true }
+          )
+        )
+      )
+
       return true
     } catch (error) {
       console.error("Error assigning workshop:", error)
@@ -1002,13 +1051,22 @@ export class Database {
         .populate("createdBy", "firstName lastName email subject")
         .lean()
 
-      // For each workshop, get question count
+      const assignments = await WorkshopAssignment.find({ studentId }).lean()
+      const assignmentByWorkshop = new Map<string, any>(
+        assignments.map((a: any) => [a.workshopId.toString(), a])
+      )
+
+      // For each workshop, get question count + la asignación individual
+      // (fecha límite y fecha de activación) sobreescribe la del taller.
       const workshopsWithDetails = await Promise.all(
         workshops.map(async (workshop: any) => {
           const questionCount = await Question.countDocuments({ workshopId: workshop._id })
+          const assignment = assignmentByWorkshop.get(workshop._id.toString())
           return {
             ...workshop,
             questionCount,
+            dueDate: assignment?.dueDate ?? workshop.dueDate ?? null,
+            activatedAt: assignment?.activatedAt ?? workshop.createdAt,
           }
         })
       )
@@ -1017,6 +1075,39 @@ export class Database {
     } catch (error) {
       console.error("Error getting assigned workshops:", error)
       return []
+    }
+  }
+
+  // Devuelve la asignación individual (workshopId+studentId) si existe.
+  static async getWorkshopAssignment(workshopId: string, studentId: string) {
+    try {
+      await this.connect()
+      return await WorkshopAssignment.findOne({ workshopId, studentId }).lean() as any
+    } catch (error) {
+      console.error("Error getting workshop assignment:", error)
+      return null
+    }
+  }
+
+  // Un taller caduca para un estudiante si su asignación tiene fecha límite,
+  // ya pasó, y no hay entrega registrada desde que se activó esa asignación
+  // (si el docente reactiva el taller, activatedAt se actualiza y vuelve a
+  // estar disponible aunque haya una entrega vieja).
+  static async isWorkshopExpiredForStudent(workshopId: string, studentId: string): Promise<boolean> {
+    try {
+      await this.connect()
+      const assignment = await WorkshopAssignment.findOne({ workshopId, studentId }).lean() as any
+      if (!assignment?.dueDate) return false
+      if (new Date() <= new Date(assignment.dueDate)) return false
+      const completedSince = await WorkshopCompletion.exists({
+        workshopId,
+        studentId,
+        completedAt: { $gte: assignment.activatedAt },
+      })
+      return !completedSince
+    } catch (error) {
+      console.error("Error checking workshop expiration:", error)
+      return false
     }
   }
 
@@ -1290,4 +1381,4 @@ export class Database {
 // ============================================================================
 // EXPORTAR MODELOS
 // ============================================================================
-export { User, Student, Teacher, Admin, Session, LoginAttempt, Workshop, Question, StudentProgress, WorkshopCompletion, Resource }
+export { User, Student, Teacher, Admin, Session, LoginAttempt, Workshop, Question, StudentProgress, WorkshopCompletion, Resource, WorkshopAssignment }

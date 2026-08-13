@@ -13,6 +13,7 @@ import { PDFCourseReport } from "@/components/pdf-course-report"
 import { WorkshopAssignmentDialog } from "@/components/teacher/workshop-assignment-dialog"
 import { ResourcePublishDialog } from "@/components/teacher/resource-publish-dialog"
 import { QuickAssignDialog } from "@/components/teacher/quick-assign-dialog"
+import { ExcelExportButton } from "@/components/teacher/excel-export-button"
 import {
   Users, BookOpen, TrendingUp, AlertTriangle, CheckCircle, Clock,
   Target, BarChart3, ArrowLeft, LogOut, Loader2, RefreshCw,
@@ -352,6 +353,7 @@ export function ModernTeacherDashboard({ userData }: ModernTeacherDashboardProps
                     institution={userData.institution}
                   />
                 )}
+                {gradeStats && students.length > 0 && <ExcelExportButton grade={selectedGrade} />}
               </div>
             </div>
 

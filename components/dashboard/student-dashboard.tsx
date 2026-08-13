@@ -389,7 +389,7 @@ export function StudentDashboard({ studentData }: StudentDashboardProps) {
                         : "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300"
                       }`}>
                         <Clock className="w-2.5 h-2.5" />
-                        {diff < 0 ? `Venció ${dueLabel}` : diff === 0 ? "Vence hoy" : diff === 1 ? "Vence mañana" : `Vence ${dueLabel}`}
+                        {w.expired ? "Caducado" : diff === 0 ? "Vence hoy" : diff === 1 ? "Vence mañana" : `Vence ${dueLabel}`}
                       </span>
                     )
                   })()}
@@ -416,7 +416,11 @@ export function StudentDashboard({ studentData }: StudentDashboardProps) {
                   )}
 
                   <div className="mt-auto">
-                    {!isDone ? (
+                    {w.expired ? (
+                      <Button size="sm" disabled className="w-full gap-1.5 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9">
+                        <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Caducado
+                      </Button>
+                    ) : !isDone ? (
                       <Link href={`/exercise/${wId}`}>
                         <Button size="sm" className="w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-700 hover:to-purple-800 text-white shadow gap-1.5 sm:gap-2 text-xs sm:text-sm h-8 sm:h-9">
                           <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Iniciar

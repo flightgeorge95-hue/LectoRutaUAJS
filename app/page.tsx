@@ -475,6 +475,10 @@ export default function HomePage() {
             <p className="text-sm text-purple-600 dark:text-purple-400 transition-colors duration-300">
               © 2026 Corporación Universitaria Antonio José de Sucre (UAJS). Todos los derechos reservados.
             </p>
+            <p className="text-xs text-purple-500 dark:text-purple-500 mt-2 transition-colors duration-300">
+              Plataforma desarrollada por Alejandro Montes Pimienta y Andrés Lara — estudiantes de Ingeniería de
+              Sistemas, Corporación Universitaria Remington (Uniremington), como proyecto de trabajo de grado.
+            </p>
           </div>
         </div>
       </footer>
