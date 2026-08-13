@@ -62,7 +62,7 @@ export function WelcomeAudio() {
         ref={audioRef}
         src="/audio/welcome-audio.mp3"
         onEnded={handleAudioEnd}
-        preload="auto"
+        preload="none"
       />
 
       {/* Welcome Prompt */}

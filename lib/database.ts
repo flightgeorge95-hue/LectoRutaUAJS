@@ -126,6 +126,8 @@ const studentSchema = new mongoose.Schema({
   points: { type: Number, default: 0 },
   level: { type: Number, default: 1 },
   userType: { type: String, default: "student" },
+  status: { type: String, enum: ["activo", "inactivo", "retirado"], default: "activo" },
+  enrollmentDate: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
@@ -141,6 +143,7 @@ const teacherSchema = new mongoose.Schema({
   subject: { type: String, required: true },
   userType: { type: String, default: "teacher" },
   gradesTeaching: [{ type: Number, enum: [10, 11] }], // Grados que enseña
+  enrollmentDate: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
@@ -1261,6 +1264,7 @@ export class Database {
     email: string
     phoneNumber: string
     birthDate: string
+    enrollmentDate?: string
   }) {
     try {
       await this.connect()
@@ -1277,6 +1281,8 @@ export class Database {
         email: data.email,
         phoneNumber: data.phoneNumber,
         birthDate: new Date(data.birthDate),
+        enrollmentDate: data.enrollmentDate ? new Date(data.enrollmentDate) : new Date(),
+        status: "activo",
         points: 0,
         level: 1,
       })
@@ -1296,6 +1302,7 @@ export class Database {
     institution: string
     subject: string
     gradesTeaching: number[]
+    enrollmentDate?: string
   }) {
     try {
       await this.connect()
@@ -1312,6 +1319,7 @@ export class Database {
         institution: data.institution,
         subject: data.subject,
         gradesTeaching: data.gradesTeaching,
+        enrollmentDate: data.enrollmentDate ? new Date(data.enrollmentDate) : new Date(),
       })
       return teacher
     } catch (error) {
@@ -1348,10 +1356,21 @@ export class Database {
     grade: number
     email: string
     phoneNumber: string
+    password: string
+    status: "activo" | "inactivo" | "retirado"
+    enrollmentDate: string
   }>) {
     try {
       await this.connect()
-      const student = await Student.findByIdAndUpdate(studentId, { ...data, updatedAt: new Date() }, { new: true })
+      const { password, enrollmentDate, ...rest } = data
+      const update: Record<string, any> = { ...rest, updatedAt: new Date() }
+      if (password) {
+        update.password = await bcrypt.hash(password, 10)
+      }
+      if (enrollmentDate) {
+        update.enrollmentDate = new Date(enrollmentDate)
+      }
+      const student = await Student.findByIdAndUpdate(studentId, update, { new: true })
       return student
     } catch (error) {
       console.error("Error updating student:", error)
@@ -1366,10 +1385,20 @@ export class Database {
     institution: string
     subject: string
     gradesTeaching: number[]
+    password: string
+    enrollmentDate: string
   }>) {
     try {
       await this.connect()
-      const teacher = await Teacher.findByIdAndUpdate(teacherId, { ...data, updatedAt: new Date() }, { new: true })
+      const { password, enrollmentDate, ...rest } = data
+      const update: Record<string, any> = { ...rest, updatedAt: new Date() }
+      if (password) {
+        update.password = await bcrypt.hash(password, 10)
+      }
+      if (enrollmentDate) {
+        update.enrollmentDate = new Date(enrollmentDate)
+      }
+      const teacher = await Teacher.findByIdAndUpdate(teacherId, update, { new: true })
       return teacher
     } catch (error) {
       console.error("Error updating teacher:", error)

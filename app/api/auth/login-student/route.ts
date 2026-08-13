@@ -24,6 +24,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Tarjeta de identidad no encontrada" }, { status: 401 })
     }
 
+    if (student.status && student.status !== "activo") {
+      await Database.logLoginAttempt(tarjetaIdentidad, false, ipAddress, userAgent)
+      const message =
+        student.status === "retirado"
+          ? "Este estudiante fue retirado de la institución. Contacta al administrador."
+          : "Esta cuenta está inactiva. Contacta al administrador."
+      return NextResponse.json({ error: message }, { status: 403 })
+    }
+
     const isValidPassword = await bcrypt.compare(password, student.password)
     if (!isValidPassword) {
       await Database.logLoginAttempt(tarjetaIdentidad, false, ipAddress, userAgent)

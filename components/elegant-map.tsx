@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useTheme } from "next-themes"
 import { MapPin, Phone, Mail, Globe, Navigation } from "lucide-react"
 
@@ -9,9 +9,28 @@ const MAP_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15749.949
 export function ElegantMap() {
   const { theme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [inView, setInView] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
   const isDark = mounted && (theme === "dark" || resolvedTheme === "dark")
 
   useEffect(() => { setMounted(true) }, [])
+
+  // Evita descargar el iframe/scripts de Google Maps (~320 KiB) hasta que el mapa
+  // esté a punto de entrar en pantalla.
+  useEffect(() => {
+    if (!containerRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: "200px" },
+    )
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   const src = MAP_URL
 
@@ -24,18 +43,27 @@ export function ElegantMap() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 z-10" />
 
         {/* Map area */}
-        <div className="relative h-[220px] sm:h-[280px]">
-          <iframe
-            src={src}
-            width="100%"
-            height="100%"
-            style={{ border: 0, filter: isDark ? "grayscale(15%) invert(92%) hue-rotate(180deg) brightness(85%) contrast(80%)" : "none" }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Ubicación UAJS - Sincelejo, Sucre"
-            className="absolute inset-0"
-          />
+        <div ref={containerRef} className="relative h-[220px] sm:h-[280px]">
+          {inView ? (
+            <iframe
+              src={src}
+              width="100%"
+              height="100%"
+              style={{ border: 0, filter: isDark ? "grayscale(15%) invert(92%) hue-rotate(180deg) brightness(85%) contrast(80%)" : "none" }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Ubicación UAJS - Sincelejo, Sucre"
+              className="absolute inset-0"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-purple-50 dark:bg-gray-800">
+              <div className="flex flex-col items-center gap-2 text-purple-400 dark:text-gray-500">
+                <MapPin className="h-8 w-8" />
+                <span className="text-xs font-medium">Cargando mapa…</span>
+              </div>
+            </div>
+          )}
 
           {/* Gradient overlay at bottom for readability */}
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />

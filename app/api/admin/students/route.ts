@@ -17,7 +17,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { firstName, lastName, grade, tarjetaIdentidad, password, email, phoneNumber, birthDate } = body
+    const { firstName, lastName, grade, tarjetaIdentidad, password, email, phoneNumber, birthDate, enrollmentDate } = body
 
     if (!firstName || !lastName || !grade || !tarjetaIdentidad || !password || !email || !phoneNumber || !birthDate) {
       return NextResponse.json({ error: "Todos los campos son requeridos" }, { status: 400 })
@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       email: email.trim().toLowerCase(),
       phoneNumber: phoneNumber.trim(),
       birthDate,
+      enrollmentDate: enrollmentDate || undefined,
     })
 
     return NextResponse.json({ success: true, student }, { status: 201 })

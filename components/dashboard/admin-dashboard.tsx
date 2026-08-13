@@ -23,6 +23,7 @@ import {
   LogOut,
   Plus,
   Trash2,
+  Pencil,
   AlertTriangle,
   CheckCircle2,
   XCircle,
@@ -45,6 +46,8 @@ const EMPTY_STUDENT_FORM = {
   email: "",
   phoneNumber: "",
   birthDate: "",
+  enrollmentDate: "",
+  status: "activo",
 }
 
 const EMPTY_TEACHER_FORM = {
@@ -57,6 +60,14 @@ const EMPTY_TEACHER_FORM = {
   subject: "Lectura Crítica",
   grade10: true,
   grade11: true,
+  enrollmentDate: "",
+}
+
+const STATUS_LABEL: Record<string, string> = { activo: "Activo", inactivo: "Inactivo", retirado: "Retirado" }
+const STATUS_COLOR: Record<string, string> = {
+  activo: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+  inactivo: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  retirado: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 }
 
 type TabKey = "grade10" | "grade11" | "teachers"
@@ -71,12 +82,85 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
   const [showCreateStudent, setShowCreateStudent] = useState(false)
   const [showCreateTeacher, setShowCreateTeacher] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<{ type: "student" | "teacher"; id: string; name: string } | null>(null)
+  const [editStudentId, setEditStudentId] = useState<string | null>(null)
+  const [editTeacherId, setEditTeacherId] = useState<string | null>(null)
+  const [statusUpdating, setStatusUpdating] = useState<string | null>(null)
 
   // Forms
   const [studentForm, setStudentForm] = useState(EMPTY_STUDENT_FORM)
   const [teacherForm, setTeacherForm] = useState(EMPTY_TEACHER_FORM)
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState("")
+
+  const toDateInput = (value: any) => (value ? new Date(value).toISOString().slice(0, 10) : "")
+
+  const openCreateStudent = () => {
+    setFormError("")
+    setEditStudentId(null)
+    setStudentForm({ ...EMPTY_STUDENT_FORM, grade: activeTab === "grade11" ? "11" : "10" })
+    setShowCreateStudent(true)
+  }
+
+  const openEditStudent = (item: any) => {
+    setFormError("")
+    setEditStudentId(item._id)
+    setStudentForm({
+      firstName: item.firstName || "",
+      lastName: item.lastName || "",
+      grade: String(item.grade || "10"),
+      tarjetaIdentidad: item.tarjetaIdentidad || "",
+      password: "",
+      email: item.email || "",
+      phoneNumber: item.phoneNumber || "",
+      birthDate: toDateInput(item.birthDate),
+      enrollmentDate: toDateInput(item.enrollmentDate),
+      status: item.status || "activo",
+    })
+    setShowCreateStudent(true)
+  }
+
+  const openCreateTeacher = () => {
+    setFormError("")
+    setEditTeacherId(null)
+    setTeacherForm(EMPTY_TEACHER_FORM)
+    setShowCreateTeacher(true)
+  }
+
+  const openEditTeacher = (item: any) => {
+    setFormError("")
+    setEditTeacherId(item._id)
+    setTeacherForm({
+      firstName: item.firstName || "",
+      lastName: item.lastName || "",
+      cedula: item.cedula || "",
+      password: "",
+      email: item.email || "",
+      institution: item.institution || "Corporación Universitaria Antonio José de Sucre",
+      subject: item.subject || "Lectura Crítica",
+      grade10: (item.gradesTeaching || []).includes(10),
+      grade11: (item.gradesTeaching || []).includes(11),
+      enrollmentDate: toDateInput(item.enrollmentDate),
+    })
+    setShowCreateTeacher(true)
+  }
+
+  const handleQuickStatusChange = async (studentId: string, status: string) => {
+    setStatusUpdating(studentId)
+    try {
+      const res = await fetch(`/api/admin/students/${studentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      })
+      if (!res.ok) throw new Error()
+      toast.success(`Estado actualizado a "${STATUS_LABEL[status]}"`)
+      loadData()
+    } catch {
+      toast.error("Error al actualizar el estado")
+    } finally {
+      setStatusUpdating(null)
+    }
+  }
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -110,23 +194,39 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
   const handleCreateStudent = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError("")
+
+    if (!editStudentId && !studentForm.password) {
+      setFormError("La contraseña es obligatoria para un estudiante nuevo")
+      return
+    }
+
     setFormLoading(true)
     try {
-      const res = await fetch("/api/admin/students", {
-        method: "POST",
+      const isEdit = !!editStudentId
+      const endpoint = isEdit ? `/api/admin/students/${editStudentId}` : "/api/admin/students"
+      const payload: Record<string, any> = {
+        ...studentForm,
+        grade: Number(studentForm.grade),
+      }
+      if (isEdit && !payload.password) delete payload.password
+
+      const res = await fetch(endpoint, {
+        method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...studentForm,
-          grade: Number(studentForm.grade),
-        }),
+        body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) {
-        setFormError(data.error || "Error al crear estudiante")
+        setFormError(data.error || `Error al ${isEdit ? "actualizar" : "crear"} estudiante`)
         return
       }
-      toast.success(`Estudiante ${studentForm.firstName} ${studentForm.lastName} registrado exitosamente`)
+      toast.success(
+        isEdit
+          ? `Estudiante ${studentForm.firstName} ${studentForm.lastName} actualizado`
+          : `Estudiante ${studentForm.firstName} ${studentForm.lastName} registrado exitosamente`,
+      )
       setShowCreateStudent(false)
+      setEditStudentId(null)
       setStudentForm(EMPTY_STUDENT_FORM)
       loadData()
     } catch {
@@ -139,40 +239,54 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
   const handleCreateTeacher = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError("")
-    setFormLoading(true)
 
+    const isEdit = !!editTeacherId
     const gradesTeaching: number[] = []
     if (teacherForm.grade10) gradesTeaching.push(10)
     if (teacherForm.grade11) gradesTeaching.push(11)
 
     if (gradesTeaching.length === 0) {
       setFormError("Selecciona al menos un grado a enseñar")
-      setFormLoading(false)
+      return
+    }
+    if (!isEdit && !teacherForm.password) {
+      setFormError("La contraseña es obligatoria para un docente nuevo")
       return
     }
 
+    setFormLoading(true)
     try {
-      const res = await fetch("/api/admin/teachers", {
-        method: "POST",
+      const endpoint = isEdit ? `/api/admin/teachers/${editTeacherId}` : "/api/admin/teachers"
+      const payload: Record<string, any> = {
+        firstName: teacherForm.firstName,
+        lastName: teacherForm.lastName,
+        cedula: teacherForm.cedula,
+        password: teacherForm.password,
+        email: teacherForm.email,
+        institution: teacherForm.institution,
+        subject: teacherForm.subject,
+        gradesTeaching,
+        enrollmentDate: teacherForm.enrollmentDate,
+      }
+      if (isEdit && !payload.password) delete payload.password
+
+      const res = await fetch(endpoint, {
+        method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: teacherForm.firstName,
-          lastName: teacherForm.lastName,
-          cedula: teacherForm.cedula,
-          password: teacherForm.password,
-          email: teacherForm.email,
-          institution: teacherForm.institution,
-          subject: teacherForm.subject,
-          gradesTeaching,
-        }),
+        body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) {
-        setFormError(data.error || "Error al crear docente")
+        setFormError(data.error || `Error al ${isEdit ? "actualizar" : "crear"} docente`)
         return
       }
-      toast.success(`Docente ${teacherForm.firstName} ${teacherForm.lastName} registrado exitosamente`)
+      toast.success(
+        isEdit
+          ? `Docente ${teacherForm.firstName} ${teacherForm.lastName} actualizado`
+          : `Docente ${teacherForm.firstName} ${teacherForm.lastName} registrado exitosamente`,
+      )
       setShowCreateTeacher(false)
+      setEditTeacherId(null)
       setTeacherForm(EMPTY_TEACHER_FORM)
       loadData()
     } catch {
@@ -339,16 +453,7 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
               </div>
 
               <Button
-                onClick={() => {
-                  setFormError("")
-                  if (activeTab === "teachers") {
-                    setTeacherForm(EMPTY_TEACHER_FORM)
-                    setShowCreateTeacher(true)
-                  } else {
-                    setStudentForm({ ...EMPTY_STUDENT_FORM, grade: activeTab === "grade10" ? "10" : "11" })
-                    setShowCreateStudent(true)
-                  }
-                }}
+                onClick={() => (activeTab === "teachers" ? openCreateTeacher() : openCreateStudent())}
                 className={`flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r text-xs sm:text-sm h-9 sm:h-10 px-3 sm:px-4 ${
                   activeTab === "teachers"
                     ? "from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
@@ -390,6 +495,7 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
                           <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 font-semibold text-muted-foreground text-[10px] sm:text-sm">Grado</th>
                           <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 font-semibold text-muted-foreground text-[10px] sm:text-sm hidden xs:table-cell">T.I.</th>
                           <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 font-semibold text-muted-foreground text-[10px] sm:text-sm hidden md:table-cell">Email</th>
+                          <th className="text-left py-2 sm:py-3 px-1.5 sm:px-2 font-semibold text-muted-foreground text-[10px] sm:text-sm">Estado</th>
                           <th className="text-right py-2 sm:py-3 px-1.5 sm:px-2 font-semibold text-muted-foreground text-[10px] sm:text-sm">Acción</th>
                         </>
                       ) : (
@@ -432,7 +538,27 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
                             </td>
                             <td className="py-2 sm:py-3 px-1.5 sm:px-2 font-mono text-muted-foreground text-[9px] sm:text-sm hidden xs:table-cell">{item.tarjetaIdentidad}</td>
                             <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-muted-foreground text-[9px] sm:text-sm hidden md:table-cell truncate max-w-[120px]">{item.email}</td>
-                            <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-right">
+                            <td className="py-2 sm:py-3 px-1.5 sm:px-2">
+                              <select
+                                value={item.status || "activo"}
+                                disabled={statusUpdating === item._id}
+                                onChange={(e) => handleQuickStatusChange(item._id, e.target.value)}
+                                className={`text-[9px] sm:text-xs font-semibold rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 border-0 focus:outline-none focus:ring-2 focus:ring-ring ${STATUS_COLOR[item.status || "activo"]}`}
+                              >
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                                <option value="retirado">Retirado</option>
+                              </select>
+                            </td>
+                            <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-right whitespace-nowrap">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openEditStudent(item)}
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted h-7 w-7 sm:h-8 sm:w-8 p-0"
+                              >
+                                <Pencil className="w-3 h-3 sm:w-4 sm:h-4" />
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -470,7 +596,15 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
                               </div>
                             </td>
                             <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-muted-foreground text-[9px] sm:text-sm hidden md:table-cell truncate max-w-[120px]">{item.email}</td>
-                            <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-right">
+                            <td className="py-2 sm:py-3 px-1.5 sm:px-2 text-right whitespace-nowrap">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openEditTeacher(item)}
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted h-7 w-7 sm:h-8 sm:w-8 p-0"
+                              >
+                                <Pencil className="w-3 h-3 sm:w-4 sm:h-4" />
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -498,12 +632,13 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
         </Card>
       </div>
 
-      {/* Dialog: Crear Estudiante */}
+      {/* Dialog: Crear/Editar Estudiante */}
       <Dialog
         open={showCreateStudent}
         onOpenChange={(open) => {
           if (!open) {
             setFormError("")
+            setEditStudentId(null)
             setStudentForm(EMPTY_STUDENT_FORM)
           }
           setShowCreateStudent(open)
@@ -513,10 +648,10 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-sm sm:text-lg">
               <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-              Registrar Nuevo Estudiante
+              {editStudentId ? "Editar Estudiante" : "Registrar Nuevo Estudiante"}
             </DialogTitle>
             <DialogDescription className="text-xs sm:text-sm">
-              Complete los datos del estudiante.
+              {editStudentId ? "Modifique los datos del estudiante." : "Complete los datos del estudiante."}
             </DialogDescription>
           </DialogHeader>
 
@@ -574,20 +709,43 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
             </div>
 
             <div className="space-y-1 sm:space-y-1.5">
-              <Label htmlFor="s-password" className="text-xs sm:text-sm">Contraseña *</Label>
+              <Label htmlFor="s-password" className="text-xs sm:text-sm">
+                {editStudentId ? "Nueva contraseña" : "Contraseña *"}
+              </Label>
               <Input
                 id="s-password"
                 type="text"
-                placeholder="Ej: número de tarjeta de identidad"
+                placeholder={editStudentId ? "Dejar vacío para no cambiarla" : "Ej: número de tarjeta de identidad"}
                 value={studentForm.password}
                 onChange={(e) => setStudentForm((f) => ({ ...f, password: e.target.value }))}
-                required
+                required={!editStudentId}
                 className="h-9 sm:h-10 text-sm"
               />
               <p className="text-[10px] sm:text-xs text-muted-foreground">
-                Recomendado: usar el número de tarjeta de identidad como contraseña inicial
+                {editStudentId
+                  ? "La contraseña actual del estudiante se mantiene si dejas esto vacío."
+                  : "Recomendado: usar el número de tarjeta de identidad como contraseña inicial"}
               </p>
             </div>
+
+            {editStudentId && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <Label htmlFor="s-status" className="text-xs sm:text-sm">Estado</Label>
+                <select
+                  id="s-status"
+                  value={studentForm.status}
+                  onChange={(e) => setStudentForm((f) => ({ ...f, status: e.target.value }))}
+                  className="w-full h-9 sm:h-10 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="activo">Activo</option>
+                  <option value="inactivo">Inactivo</option>
+                  <option value="retirado">Retirado</option>
+                </select>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">
+                  Inactivo/Retirado bloquea el inicio de sesión del estudiante.
+                </p>
+              </div>
+            )}
 
             <div className="space-y-1 sm:space-y-1.5">
               <Label htmlFor="s-email" className="text-xs sm:text-sm">Email *</Label>
@@ -628,6 +786,20 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
               </div>
             </div>
 
+            <div className="space-y-1 sm:space-y-1.5">
+              <Label htmlFor="s-enrollment" className="text-xs sm:text-sm">Fecha de ingreso</Label>
+              <Input
+                id="s-enrollment"
+                type="date"
+                value={studentForm.enrollmentDate}
+                onChange={(e) => setStudentForm((f) => ({ ...f, enrollmentDate: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
+              />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                Opcional. Si se deja vacío, se usa la fecha de hoy al registrar.
+              </p>
+            </div>
+
             {formError && (
               <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 flex-shrink-0" />
@@ -645,19 +817,20 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
                 className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white w-full sm:w-auto text-xs sm:text-sm h-9 sm:h-10"
               >
                 {formLoading ? <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-                <span className="ml-1.5 sm:ml-2">Registrar Estudiante</span>
+                <span className="ml-1.5 sm:ml-2">{editStudentId ? "Guardar Cambios" : "Registrar Estudiante"}</span>
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
-      {/* Dialog: Crear Docente */}
+      {/* Dialog: Crear/Editar Docente */}
       <Dialog
         open={showCreateTeacher}
         onOpenChange={(open) => {
           if (!open) {
             setFormError("")
+            setEditTeacherId(null)
             setTeacherForm(EMPTY_TEACHER_FORM)
           }
           setShowCreateTeacher(open)
@@ -667,9 +840,11 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-sm sm:text-lg">
               <BookMarked className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
-              Registrar Nuevo Docente
+              {editTeacherId ? "Editar Docente" : "Registrar Nuevo Docente"}
             </DialogTitle>
-            <DialogDescription className="text-xs sm:text-sm">Complete los datos del docente.</DialogDescription>
+            <DialogDescription className="text-xs sm:text-sm">
+              {editTeacherId ? "Modifique los datos del docente." : "Complete los datos del docente."}
+            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleCreateTeacher} className="space-y-3 sm:space-y-4 mt-2">
@@ -712,16 +887,23 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
             </div>
 
             <div className="space-y-1 sm:space-y-1.5">
-              <Label htmlFor="t-password" className="text-xs sm:text-sm">Contraseña *</Label>
+              <Label htmlFor="t-password" className="text-xs sm:text-sm">
+                {editTeacherId ? "Nueva contraseña" : "Contraseña *"}
+              </Label>
               <Input
                 id="t-password"
                 type="text"
-                placeholder="Contraseña inicial"
+                placeholder={editTeacherId ? "Dejar vacío para no cambiarla" : "Contraseña inicial"}
                 value={teacherForm.password}
                 onChange={(e) => setTeacherForm((f) => ({ ...f, password: e.target.value }))}
-                required
+                required={!editTeacherId}
                 className="h-9 sm:h-10 text-sm"
               />
+              {editTeacherId && (
+                <p className="text-[10px] sm:text-xs text-muted-foreground">
+                  La contraseña actual del docente se mantiene si dejas esto vacío.
+                </p>
+              )}
             </div>
 
             <div className="space-y-1 sm:space-y-1.5">
@@ -789,6 +971,20 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
               </div>
             </div>
 
+            <div className="space-y-1 sm:space-y-1.5">
+              <Label htmlFor="t-enrollment" className="text-xs sm:text-sm">Fecha de ingreso</Label>
+              <Input
+                id="t-enrollment"
+                type="date"
+                value={teacherForm.enrollmentDate}
+                onChange={(e) => setTeacherForm((f) => ({ ...f, enrollmentDate: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
+              />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                Opcional. Si se deja vacío, se usa la fecha de hoy al registrar.
+              </p>
+            </div>
+
             {formError && (
               <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <XCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 flex-shrink-0" />
@@ -806,7 +1002,7 @@ export function AdminDashboard({ adminData }: AdminDashboardProps) {
                 className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white w-full sm:w-auto text-xs sm:text-sm h-9 sm:h-10"
               >
                 {formLoading ? <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-                <span className="ml-1.5 sm:ml-2">Registrar Docente</span>
+                <span className="ml-1.5 sm:ml-2">{editTeacherId ? "Guardar Cambios" : "Registrar Docente"}</span>
               </Button>
             </DialogFooter>
           </form>

@@ -17,7 +17,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { firstName, lastName, cedula, password, email, institution, subject, gradesTeaching } = body
+    const { firstName, lastName, cedula, password, email, institution, subject, gradesTeaching, enrollmentDate } = body
 
     if (!firstName || !lastName || !cedula || !password || !email || !institution || !subject || !gradesTeaching?.length) {
       return NextResponse.json({ error: "Todos los campos son requeridos" }, { status: 400 })
@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
       institution: institution.trim(),
       subject: subject.trim(),
       gradesTeaching: gradesTeaching.map(Number),
+      enrollmentDate: enrollmentDate || undefined,
     })
 
     return NextResponse.json({ success: true, teacher }, { status: 201 })
