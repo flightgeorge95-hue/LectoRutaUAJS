@@ -603,6 +603,7 @@ export function ModernTeacherDashboard({ userData }: ModernTeacherDashboardProps
                       studentName={`${selectedStudent.firstName} ${selectedStudent.lastName}`}
                       studentGrade={selectedStudent.grade}
                       teacherId={teacherId}
+                      weakCompetencies={selectedStudent.weakCompetencies}
                     />
                   </div>
                 </div>
