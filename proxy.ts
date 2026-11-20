@@ -14,11 +14,25 @@ const PAGE_ROUTES: { path: string; role: string }[] = [
   { path: "/teacher/review", role: "teacher" },
 ]
 
-// Rutas de API protegidas y los roles permitidos
-const API_ROUTES: { path: string; roles: string[] }[] = [
+// Rutas de API protegidas y los roles permitidos.
+// Se evalúan en orden y gana la primera que coincide, por eso las reglas
+// específicas (crear, asignar, escribir) van antes que las generales.
+// `methods` limita la regla a esos métodos HTTP; `exact` exige la ruta exacta.
+type ApiRule = { path: string; roles: string[]; methods?: string[]; exact?: boolean }
+const STAFF = ["teacher", "admin"]
+const ALL = ["student", "teacher", "admin"]
+const API_ROUTES: ApiRule[] = [
   { path: "/api/admin", roles: ["admin"] },
-  { path: "/api/workshops", roles: ["student", "teacher", "admin"] },
-  { path: "/api/questions", roles: ["student", "teacher", "admin"] },
+  // Solo docentes y administradores crean o asignan talleres
+  { path: "/api/workshops/create", roles: STAFF },
+  { path: "/api/workshops/assign", roles: STAFF },
+  { path: "/api/workshops", exact: true, methods: ["POST"], roles: STAFF },
+  { path: "/api/workshops", roles: ALL },
+  // El banco de preguntas incluye respuestas correctas: nunca accesible para estudiantes
+  { path: "/api/questions", roles: STAFF },
+  // Los estudiantes leen recursos e interactúan (me gusta, guardar); publicar o borrar es del docente
+  { path: "/api/resources/interact", roles: ALL },
+  { path: "/api/resources", methods: ["POST", "PUT", "PATCH", "DELETE"], roles: STAFF },
   { path: "/api/students", roles: ["teacher", "admin"] },
   { path: "/api/teacher", roles: ["teacher", "admin"] },
   { path: "/api/teacher/review", roles: ["teacher", "admin"] },
@@ -60,7 +74,9 @@ export async function proxy(request: NextRequest) {
 
   // Verificar rutas de API
   for (const route of API_ROUTES) {
-    if (pathname.startsWith(route.path)) {
+    const pathMatches = route.exact ? pathname === route.path : pathname.startsWith(route.path)
+    const methodMatches = !route.methods || route.methods.includes(request.method)
+    if (pathMatches && methodMatches) {
       if (!session || !route.roles.includes(session.userType)) {
         return NextResponse.json({ error: "No autorizado" }, { status: 401 })
       }

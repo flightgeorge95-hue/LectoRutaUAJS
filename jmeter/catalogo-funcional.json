@@ -1,0 +1,286 @@
+{
+  "grupos": [
+    {
+      "g": "A",
+      "nombre": "Sin sesión: disponibilidad, control de acceso y validación",
+      "hasta": 15
+    },
+    {
+      "g": "B",
+      "nombre": "Autenticación con credenciales inválidas",
+      "hasta": 20
+    },
+    {
+      "g": "C",
+      "nombre": "Flujo del estudiante",
+      "hasta": 35
+    },
+    {
+      "g": "D",
+      "nombre": "Flujo del docente",
+      "hasta": 44
+    },
+    {
+      "g": "E",
+      "nombre": "Flujo del administrador",
+      "hasta": 51
+    }
+  ],
+  "casos": [
+    {
+      "id": "TC-01",
+      "nombre": "Página de inicio carga",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-02",
+      "nombre": "Portal estudiante muestra login",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-03",
+      "nombre": "Portal docente muestra login",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-04",
+      "nombre": "Portal administrador muestra login",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-05",
+      "nombre": "Talleres sin sesión",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-06",
+      "nombre": "Listado admin de estudiantes sin sesión",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-07",
+      "nombre": "Métricas docentes sin sesión",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-08",
+      "nombre": "Estadísticas de estudiante sin sesión",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-09",
+      "nombre": "Exportar Excel sin sesión",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-10",
+      "nombre": "JWT con rol admin firmado con clave falsa",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-11",
+      "nombre": "JWT sin firma (alg=none) con rol admin",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-12",
+      "nombre": "Cookie de sesión con texto basura",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-13",
+      "nombre": "Login estudiante sin campos",
+      "esperado": "400"
+    },
+    {
+      "id": "TC-14",
+      "nombre": "Login docente sin contraseña",
+      "esperado": "400"
+    },
+    {
+      "id": "TC-15",
+      "nombre": "Login admin sin campos",
+      "esperado": "400"
+    },
+    {
+      "id": "TC-16",
+      "nombre": "Estudiante con tarjeta inexistente",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-17",
+      "nombre": "Estudiante con contraseña incorrecta",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-18",
+      "nombre": "Docente con contraseña incorrecta",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-19",
+      "nombre": "Administrador con contraseña incorrecta",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-20",
+      "nombre": "Inyección NoSQL en login ({$ne:null})",
+      "esperado": "400/401/500"
+    },
+    {
+      "id": "TC-21",
+      "nombre": "Login estudiante válido",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-22",
+      "nombre": "Panel: talleres asignados del estudiante",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-23",
+      "nombre": "Panel: estadísticas y competencias",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-24",
+      "nombre": "Catálogo de talleres del grado",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-25",
+      "nombre": "Detalle de taller NO expone respuestas correctas",
+      "esperado": "200/403"
+    },
+    {
+      "id": "TC-26",
+      "nombre": "Estudiante → listado admin",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-27",
+      "nombre": "Estudiante → métricas docentes",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-28",
+      "nombre": "Estudiante → listado de estudiantes por grado",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-29",
+      "nombre": "Estudiante → banco de preguntas con respuestas",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-30",
+      "nombre": "Estudiante → crear taller",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-31",
+      "nombre": "Estudiante → publicar recurso",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-32",
+      "nombre": "Estudiante abre panel admin",
+      "esperado": "307/308"
+    },
+    {
+      "id": "TC-33",
+      "nombre": "Cerrar sesión",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-34",
+      "nombre": "API tras cerrar sesión",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-35",
+      "nombre": "Token anterior reutilizado tras logout",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-36",
+      "nombre": "Login docente válido",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-37",
+      "nombre": "Métricas del grado 11",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-38",
+      "nombre": "Métricas del grado 10",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-39",
+      "nombre": "Estudiantes del grado 11",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-40",
+      "nombre": "Grado fuera de rango (9)",
+      "esperado": "400"
+    },
+    {
+      "id": "TC-41",
+      "nombre": "Entregas pendientes de revisión",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-42",
+      "nombre": "Exportar reporte Excel del grado 11",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-43",
+      "nombre": "Docente → gestión de docentes (admin)",
+      "esperado": "401"
+    },
+    {
+      "id": "TC-44",
+      "nombre": "Cerrar sesión docente",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-45",
+      "nombre": "Login administrador válido",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-46",
+      "nombre": "Listar estudiantes",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-47",
+      "nombre": "Listar docentes",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-48",
+      "nombre": "Crear estudiante con campos faltantes",
+      "esperado": "400"
+    },
+    {
+      "id": "TC-49",
+      "nombre": "Crear estudiante con grado 9",
+      "esperado": "400"
+    },
+    {
+      "id": "TC-50",
+      "nombre": "Recursos educativos",
+      "esperado": "200"
+    },
+    {
+      "id": "TC-51",
+      "nombre": "Cerrar sesión administrador",
+      "esperado": "200"
+    }
+  ]
+}
