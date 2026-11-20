@@ -26,3 +26,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# credenciales locales
+credenciales-lectoruta.txt
+
+# JMeter: credenciales y resultados locales
+/jmeter/config/credenciales.properties
+/jmeter/data/*.csv
+!/jmeter/data/*.example.csv
+/jmeter/resultados/

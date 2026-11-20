@@ -23,6 +23,8 @@ export interface SessionPayload {
   gradesTeaching?: number[]
   points?: number
   level?: number
+  // Identificador de la sesión en la colección `sessions` (permite revocarla al cerrar sesión)
+  sid?: string
 }
 
 function getSecretKey(): Uint8Array {

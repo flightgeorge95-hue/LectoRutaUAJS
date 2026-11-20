@@ -529,13 +529,10 @@ Compite con tus compañeros viendo:
 
 1. Desde la página principal, haz clic en **"Acceder como Docente"**
 2. Ingresa tu **Cédula** (ejemplo: 48234567)
-3. Ingresa tu **Contraseña** (ejemplo: LectoSaber2025!)
+3. Ingresa tu **Contraseña** (asignada por el administrador)
 4. Haz clic en **"Acceder al Panel"**
 
-> **Credenciales de prueba disponibles:**
-> - Patricia Díaz: Cédula `48234567` / Contraseña `LectoSaber2025!`
-> - Carlos Ramírez: Cédula `52651850` / Contraseña `LectoSaber2025!`
-> - Ana Torres: Cédula `40123456` / Contraseña `LectoSaber2025!`
+> Las credenciales de acceso las entrega el administrador de la plataforma; por seguridad no se publican en este manual.
 
 ### Dashboard del Docente
 

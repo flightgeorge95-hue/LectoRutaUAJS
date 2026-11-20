@@ -10,7 +10,8 @@
 
 **Desarrollado por:** Alejandro Montes Pimienta  y Andres Lara
 **Institución:** Corporación Universitaria Antonio José de Sucre - UAJS  
-**Año:** 2026
+**Año:** 2026  
+**Plataforma en producción:** https://lecto-ruta.vercel.app (Vercel + MongoDB Atlas)
 
 ---
 
@@ -85,9 +86,17 @@ El manual incluye:
 - `1098765435` - Ana Martínez (Grado 10°)
 
 ### Docentes (requieren Cédula y Contraseña):
-- Cédula: `48234567` | Contraseña: `LectoSaber2025!` - Patricia Díaz Mendoza
-- Cédula: `52651850` | Contraseña: `LectoSaber2025!` - Carlos Ramírez López
-- Cédula: `40123456` | Contraseña: `LectoSaber2025!` - Ana María Torres
+Las credenciales de docentes y del administrador las entrega el administrador de la plataforma. Por seguridad no se publican en el repositorio.
+
+---
+
+## 🧪 Pruebas
+
+La carpeta [`jmeter/`](jmeter/README.md) contiene la batería de pruebas con Apache JMeter 5.6.3: 48 casos funcionales y de seguridad, más pruebas de carga, estrés escalonado y pico.
+
+```powershell
+.\jmeter\ejecutar-pruebas.ps1 -Prueba todas
+```
 
 ---
 

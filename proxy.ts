@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifySessionToken, SESSION_COOKIE_NAME, type SessionPayload } from "@/lib/session"
+import { Database } from "@/lib/database"
 
 // Rutas de página protegidas y el rol requerido
 const PAGE_ROUTES: { path: string; role: string }[] = [
@@ -29,8 +30,13 @@ const API_ROUTES: { path: string; roles: string[] }[] = [
 async function getSession(request: NextRequest): Promise<SessionPayload | null> {
   const cookie = request.cookies.get(SESSION_COOKIE_NAME)?.value
   if (!cookie) return null
-  // Verifica firma HMAC y expiración del JWT — una cookie manipulada se rechaza aquí
-  return verifySessionToken(cookie)
+  // 1) Verifica firma HMAC y expiración del JWT — una cookie manipulada se rechaza aquí
+  const payload = await verifySessionToken(cookie)
+  if (!payload?.sid) return null
+  // 2) Verifica que la sesión siga activa en el servidor (se elimina al cerrar sesión).
+  //    El proxy de Next.js 16 se ejecuta en Node.js, por lo que puede consultar MongoDB.
+  const active = await Database.isSessionActive(payload.sid)
+  return active ? payload : null
 }
 
 export async function proxy(request: NextRequest) {

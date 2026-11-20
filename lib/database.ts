@@ -119,7 +119,7 @@ const studentSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   grade: { type: Number, required: true, enum: [10, 11] }, // Solo grados 10 y 11
   tarjetaIdentidad: { type: String, required: true, unique: true }, // Tarjeta de Identidad (login)
-  password: { type: String, required: true }, // Password para login
+  password: { type: String, required: true, select: false }, // Hash bcrypt; solo se lee explícitamente en el login
   email: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   birthDate: { type: Date, required: true },
@@ -137,7 +137,7 @@ const teacherSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   cedula: { type: String, required: true, unique: true }, // Cédula (login)
-  password: { type: String, required: true }, // Password para login
+  password: { type: String, required: true, select: false }, // Hash bcrypt; solo se lee explícitamente en el login
   email: { type: String, required: true },
   institution: { type: String, required: true },
   subject: { type: String, required: true },
@@ -157,6 +157,8 @@ const sessionSchema = new mongoose.Schema({
   userAgent: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 })
+// MongoDB elimina automáticamente las sesiones vencidas
+sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
 
 // Login Attempt Schema
 const loginAttemptSchema = new mongoose.Schema({
@@ -197,7 +199,7 @@ const adminSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   cedula: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
   email: { type: String, required: true },
   userType: { type: String, default: "admin" },
   createdAt: { type: Date, default: Date.now },
@@ -330,6 +332,31 @@ export class Database {
     }
   }
 
+  // Una sesión es válida mientras exista en la colección y no haya vencido.
+  // Cerrar sesión la elimina, por lo que un token copiado deja de servir.
+  static async isSessionActive(sessionToken: string) {
+    try {
+      const connected = await this.connect()
+      if (!connected) return false
+      const session = await Session.exists({ sessionToken, expiresAt: { $gt: new Date() } })
+      return !!session
+    } catch (error) {
+      console.error("Database error checking session:", error)
+      return false
+    }
+  }
+
+  static async revokeSession(sessionToken: string) {
+    try {
+      await this.connect()
+      await Session.deleteOne({ sessionToken })
+      return true
+    } catch (error) {
+      console.error("Database error revoking session:", error)
+      return false
+    }
+  }
+
   static async logLoginAttempt(email: string, success: boolean, ipAddress: string, userAgent: string) {
     try {
       await this.connect()
@@ -398,7 +425,7 @@ export class Database {
   static async findStudentByTarjeta(tarjetaIdentidad: string) {
     try {
       await this.connect()
-      const student = await Student.findOne({ tarjetaIdentidad }).lean()
+      const student = await Student.findOne({ tarjetaIdentidad }).select("+password").lean()
       return student
     } catch (error) {
       console.error("Database error finding student:", error)
@@ -409,7 +436,7 @@ export class Database {
   static async findTeacherByCedula(cedula: string) {
     try {
       await this.connect()
-      const teacher = await Teacher.findOne({ cedula }).lean()
+      const teacher = await Teacher.findOne({ cedula }).select("+password").lean()
       return teacher
     } catch (error) {
       console.error("Database error finding teacher:", error)
@@ -1213,7 +1240,7 @@ export class Database {
   static async findAdminByCedula(cedula: string) {
     try {
       await this.connect()
-      const admin = await Admin.findOne({ cedula }).lean()
+      const admin = await Admin.findOne({ cedula }).select("+password").lean()
       return admin
     } catch (error) {
       console.error("Error finding admin:", error)
@@ -1286,7 +1313,9 @@ export class Database {
         points: 0,
         level: 1,
       })
-      return student
+      // create() devuelve el documento completo: se quita el hash antes de responder
+      const { password: _hash, ...safeStudent } = student.toObject()
+      return safeStudent
     } catch (error) {
       console.error("Error creating student by admin:", error)
       throw error
@@ -1321,7 +1350,8 @@ export class Database {
         gradesTeaching: data.gradesTeaching,
         enrollmentDate: data.enrollmentDate ? new Date(data.enrollmentDate) : new Date(),
       })
-      return teacher
+      const { password: _hash, ...safeTeacher } = teacher.toObject()
+      return safeTeacher
     } catch (error) {
       console.error("Error creating teacher by admin:", error)
       throw error
