@@ -354,7 +354,7 @@ ws3.getColumn(3).width = 16;
 ws3.getColumn(4).width = 16;
 
 // ======================== SAVE ========================
-const outputPath = 'C:\\Users\\WinterOS\\Downloads\\LECTORUTA V2.8 PARCHE SEGUIRIDAD BASIC\\GESTION_PROYECTOS\\Lectoruta_Gantt_Cronograma.xlsx';
+const outputPath = require('path').join(__dirname, 'Lectoruta_Gantt_Cronograma.xlsx');
 
 wb.xlsx.writeFile(outputPath).then(() => {
   console.log('✅ Excel creado exitosamente:');

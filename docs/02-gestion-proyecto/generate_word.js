@@ -602,7 +602,7 @@ async function main() {
   });
 
   const buffer = await Packer.toBuffer(doc);
-  const outputPath = 'C:\\Users\\WinterOS\\Downloads\\LECTORUTA V2.8 PARCHE SEGUIRIDAD BASIC\\GESTION_PROYECTOS\\Parcial1_Gestion_Proyectos_Lectoruta.docx';
+  const outputPath = require('path').join(__dirname, 'Parcial1_Gestion_Proyectos_Lectoruta.docx');
   fs.writeFileSync(outputPath, buffer);
   console.log('✅ Word generado exitosamente:');
   console.log('   ' + outputPath);

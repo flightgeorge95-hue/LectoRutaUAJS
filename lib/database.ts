@@ -252,7 +252,7 @@ export class Database {
       console.error("\n   2. Verificar que la URI sea correcta en .env.local:")
       console.error(`      Actual: ${MONGODB_URI}`)
       console.error("\n   3. Verificar que el puerto 27017 esté libre")
-      console.error("\n   4. Revisar el manual: MANUAL_USUARIO.md")
+      console.error("\n   4. Revisar el manual: docs/05-manuales/MANUAL_USUARIO.md")
       console.error("═══════════════════════════════════════════════════════════\n")
       return false
     }
@@ -1000,7 +1000,7 @@ export class Database {
       teachers.forEach((t) => {
         console.log(`   • ${t.firstName} ${t.lastName} - Cédula: ${t.cedula} - Contraseña: LectoSaber2025!`)
       })
-      console.log(`\n💡 [DATABASE] Ver credenciales completas en: MANUAL_USUARIO.md`)
+      console.log(`\n💡 [DATABASE] Consulta el manual en: docs/05-manuales/MANUAL_USUARIO.md`)
       console.log("═══════════════════════════════════════════════════════════\n")
 
       return {
@@ -1026,7 +1026,7 @@ export class Database {
       console.error("❌ [DATABASE] ERROR AL INICIALIZAR BASE DE DATOS")
       console.error("═══════════════════════════════════════════════════════════")
       console.error("📋 Detalles:", error.message)
-      console.error("\n💡 Revisa el manual: MANUAL_USUARIO.md")
+      console.error("\n💡 Revisa el manual: docs/05-manuales/MANUAL_USUARIO.md")
       console.error("═══════════════════════════════════════════════════════════\n")
       return { success: false, error: error.message }
     }

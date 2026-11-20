@@ -34,3 +34,9 @@ credenciales-lectoruta.txt
 /jmeter/data/*.csv
 !/jmeter/data/*.example.csv
 /jmeter/resultados/
+
+# docs: los documentos de Office, PDF e imágenes se conservan solo en local
+/docs/**/*.docx
+/docs/**/*.xlsx
+/docs/**/*.pdf
+/docs/**/*.png

@@ -78,10 +78,10 @@
 3. Ejecuta el instalador y sigue las instrucciones
 4. Verifica la instalación abriendo una terminal y ejecutando:
 
-\`\`\`bash
+```bash
 node --version
 npm --version
-\`\`\`
+```
 
 Deberías ver las versiones instaladas (ejemplo: v18.17.0 y 9.6.7)
 
@@ -98,22 +98,22 @@ Deberías ver las versiones instaladas (ejemplo: v18.17.0 y 9.6.7)
    - Deja el puerto por defecto (27017)
 5. Verifica la instalación:
 
-\`\`\`bash
+```bash
 mongo --version
-\`\`\`
+```
 
 #### En macOS:
 
-\`\`\`bash
+```bash
 # Usando Homebrew
 brew tap mongodb/brew
 brew install mongodb-community@6.0
 brew services start mongodb-community@6.0
-\`\`\`
+```
 
 #### En Linux (Ubuntu):
 
-\`\`\`bash
+```bash
 # Importar la clave pública
 wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
 
@@ -127,7 +127,7 @@ sudo apt-get install -y mongodb-org
 # Iniciar el servicio
 sudo systemctl start mongod
 sudo systemctl enable mongod
-\`\`\`
+```
 
 ### Paso 3: Instalar MongoDB Compass (Opcional pero Recomendado)
 
@@ -146,13 +146,13 @@ Extrae el archivo ZIP del proyecto en la ubicación deseada, por ejemplo:
 
 Abre una terminal en la carpeta del proyecto y ejecuta:
 
-\`\`\`bash
+```bash
 # Navegar a la carpeta del proyecto
 cd ruta/a/LectoRutaSaber
 
 # Instalar todas las dependencias
 npm install
-\`\`\`
+```
 
 Este proceso puede tardar varios minutos. Espera hasta ver el mensaje "added X packages".
 
@@ -160,7 +160,7 @@ Este proceso puede tardar varios minutos. Espera hasta ver el mensaje "added X p
 
 Crea un archivo `.env.local` en la raíz del proyecto con el siguiente contenido:
 
-\`\`\`env
+```env
 # Conexión a MongoDB
 MONGODB_URI=mongodb://localhost:27017/lectosaber
 
@@ -169,23 +169,23 @@ SESSION_SECRET=tu_clave_secreta_aqui_cambiar_en_produccion
 
 # Entorno de desarrollo
 NODE_ENV=development
-\`\`\`
+```
 
 **Nota:** Cambia `tu_clave_secreta_aqui_cambiar_en_produccion` por una cadena segura y única.
 
 ### Paso 7: Iniciar el Servidor de Desarrollo
 
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 
 Deberías ver un mensaje similar a:
 
-\`\`\`
+```
 ✓ Ready in 2.5s
 ○ Local:        http://localhost:3000
 ○ Network:      http://192.168.1.x:3000
-\`\`\`
+```
 
 ---
 
@@ -197,29 +197,29 @@ Deberías ver un mensaje similar a:
 
 Abre una terminal y ejecuta:
 
-\`\`\`bash
+```bash
 mongod --version
-\`\`\`
+```
 
 Deberías ver la versión instalada (ejemplo: `db version v6.0.x`)
 
 #### Paso 2: Iniciar Servicio de MongoDB
 
 **En Windows:**
-\`\`\`bash
+```bash
 net start MongoDB
-\`\`\`
+```
 
 **En macOS:**
-\`\`\`bash
+```bash
 brew services start mongodb-community@6.0
-\`\`\`
+```
 
 **En Linux:**
-\`\`\`bash
+```bash
 sudo systemctl start mongod
 sudo systemctl enable mongod  # Para que inicie automáticamente
-\`\`\`
+```
 
 #### Paso 3: Conectar con MongoDB Compass
 
@@ -233,9 +233,9 @@ MongoDB Compass es la herramienta visual oficial para administrar bases de datos
 2. **Conectar a MongoDB Local:**
    - Abre MongoDB Compass
    - En "New Connection", ingresa la URI:
-     \`\`\`
+     ```
      mongodb://localhost:27017
-     \`\`\`
+     ```
    - Haz clic en **"Connect"**
    - Verás la lista de bases de datos disponibles
 
@@ -243,20 +243,20 @@ MongoDB Compass es la herramienta visual oficial para administrar bases de datos
 
 Con el servidor de desarrollo ejecutándose (`npm run dev`), abre tu navegador y visita:
 
-\`\`\`
+```
 http://localhost:3000/api/init-db
-\`\`\`
+```
 
 Verás una respuesta JSON confirmando la creación:
 
-\`\`\`json
+```json
 {
   "success": true,
   "message": "Base de datos inicializada correctamente",
   "studentsCreated": 10,
   "teachersCreated": 3
 }
-\`\`\`
+```
 
 #### Paso 5: Verificar Datos en MongoDB Compass
 
@@ -273,25 +273,25 @@ Verás una respuesta JSON confirmando la creación:
 4. **Explorar colección de estudiantes:**
    - Haz clic en `students`
    - Verás documentos como:
-     \`\`\`json
+     ```json
      {
        "_id": "ObjectId('...')",
        "firstName": "Luis Enrique",
        "lastName": "Pérez González",
        "grade": 11,
-       "tarjetaIdentidad": "1098765432",
+       "tarjetaIdentidad": "1000000000",
        "password": "$2a$10$...",  // Encriptada con bcrypt
        "email": "luis.perez@estudiante.uajs.edu.co",
        "phoneNumber": "3001234567",
        "points": 0,
        "level": 1
      }
-     \`\`\`
+     ```
 
 5. **Explorar colección de docentes:**
    - Haz clic en `teachers`
    - Verás documentos como:
-     \`\`\`json
+     ```json
      {
        "_id": "ObjectId('...')",
        "firstName": "Patricia",
@@ -303,7 +303,7 @@ Verás una respuesta JSON confirmando la creación:
        "subject": "Lengua Castellana",
        "gradesTeaching": [10, 11]
      }
-     \`\`\`
+     ```
 
 ### Opción 2: MongoDB Atlas (Nube - Para Producción)
 
@@ -350,20 +350,20 @@ MongoDB Atlas es el servicio de base de datos en la nube oficial de MongoDB.
 1. En el dashboard, haz clic en **"Connect"** en tu cluster
 2. Selecciona **"Connect your application"**
 3. Copia la URI de conexión:
-   \`\`\`
+   ```
    mongodb+srv://lectosaber_admin:<password>@lectosaber-cluster.xxxxx.mongodb.net/?retryWrites=true&w=majority
-   \`\`\`
+   ```
 4. Reemplaza `<password>` con la contraseña que creaste
 5. Agrega el nombre de la base de datos después del `/`:
-   \`\`\`
+   ```
    mongodb+srv://lectosaber_admin:TuContraseña@lectosaber-cluster.xxxxx.mongodb.net/lectosaber?retryWrites=true&w=majority
-   \`\`\`
+   ```
 
 #### Paso 5: Configurar en el Proyecto
 
 Edita el archivo `.env.local` en la raíz del proyecto:
 
-\`\`\`env
+```env
 # Comentar la URI local
 # MONGODB_URI=mongodb://localhost:27017/lectosaber
 
@@ -371,26 +371,26 @@ Edita el archivo `.env.local` en la raíz del proyecto:
 MONGODB_URI=mongodb+srv://lectosaber_admin:TuContraseña@lectosaber-cluster.xxxxx.mongodb.net/lectosaber?retryWrites=true&w=majority
 
 SESSION_SECRET=tu_clave_secreta_aqui_cambiar_en_produccion
-\`\`\`
+```
 
 #### Paso 6: Reiniciar Servidor e Inicializar
 
-\`\`\`bash
+```bash
 # Detener el servidor (Ctrl + C)
 # Iniciar nuevamente
 npm run dev
 
 # Inicializar base de datos en Atlas
 # Visita: http://localhost:3000/api/init-db
-\`\`\`
+```
 
 #### Paso 7: Verificar en MongoDB Compass
 
 1. Abre MongoDB Compass
 2. Conecta usando la misma URI de Atlas:
-   \`\`\`
+   ```
    mongodb+srv://lectosaber_admin:TuContraseña@lectosaber-cluster.xxxxx.mongodb.net/lectosaber
-   \`\`\`
+   ```
 3. Verás la base de datos `lectosaber` con todas las colecciones
 
 ---
@@ -418,7 +418,7 @@ La página principal incluye:
 
 1. Haz clic en el botón **"Ingresar"** en la página principal
 2. Selecciona la pestaña **"Estudiante"**
-3. Ingresa tu **Tarjeta de Identidad** (ejemplo: 1098765432)
+3. Ingresa tu **Tarjeta de Identidad** (ejemplo: 1000000000)
 4. Haz clic en **"Iniciar Sesión"**
 5. Verás un mensaje de bienvenida con tu nombre
 
@@ -634,13 +634,13 @@ Solo usuarios con rol de administrador pueden acceder.
 2. Selecciona **"Estudiante"**
 3. Completa el formulario:
 
-\`\`\`
+```
 Nombres: [Nombre(s) del estudiante]
 Apellidos: [Apellidos del estudiante]
 Tarjeta de Identidad: [Número único de 10 dígitos]
 Grado: [Selecciona 10° u 11°]
 Correo Electrónico: [Opcional, para notificaciones]
-\`\`\`
+```
 
 4. Haz clic en **"Registrar Estudiante"**
 5. El estudiante podrá ingresar inmediatamente con su tarjeta de identidad
@@ -651,14 +651,14 @@ Correo Electrónico: [Opcional, para notificaciones]
 2. Selecciona **"Docente"**
 3. Completa el formulario:
 
-\`\`\`
+```
 Nombres: [Nombre(s) del docente]
 Apellidos: [Apellidos del docente]
 Cédula: [Número de cédula]
 Especialidad: [Área de enseñanza]
 Correo Electrónico: [Correo institucional]
 Contraseña Inicial: [Contraseña temporal]
-\`\`\`
+```
 
 4. Haz clic en **"Registrar Docente"**
 5. Se recomienda que el docente cambie su contraseña al primer inicio de sesión
@@ -706,9 +706,9 @@ Contraseña Inicial: [Contraseña temporal]
 
 Edita el archivo `.env.local`:
 
-\`\`\`env
+```env
 PORT=3001
-\`\`\`
+```
 
 Reinicia el servidor.
 
@@ -716,9 +716,9 @@ Reinicia el servidor.
 
 Si MongoDB está en un servidor remoto:
 
-\`\`\`env
+```env
 MONGODB_URI=mongodb://usuario:contraseña@servidor:27017/lectosaber
-\`\`\`
+```
 
 ---
 
@@ -727,48 +727,48 @@ MONGODB_URI=mongodb://usuario:contraseña@servidor:27017/lectosaber
 ### Problema: No se inicia el servidor (npm run dev)
 
 **Síntomas:**
-\`\`\`
+```
 Error: Cannot find module...
-\`\`\`
+```
 
 **Solución:**
-\`\`\`bash
+```bash
 # Eliminar node_modules y reinstalar
 rm -rf node_modules package-lock.json
 npm install
 npm run dev
-\`\`\`
+```
 
 ---
 
 ### Problema: Error de conexión a MongoDB
 
 **Síntomas:**
-\`\`\`
+```
 MongoServerError: connect ECONNREFUSED 127.0.0.1:27017
-\`\`\`
+```
 
 **Solución:**
 
 **En Windows:**
-\`\`\`bash
+```bash
 # Verificar si MongoDB está corriendo
 net start MongoDB
 
 # Si no está iniciado
 net start MongoDB
-\`\`\`
+```
 
 **En macOS:**
-\`\`\`bash
+```bash
 brew services start mongodb-community@6.0
-\`\`\`
+```
 
 **En Linux:**
-\`\`\`bash
+```bash
 sudo systemctl start mongod
 sudo systemctl status mongod
-\`\`\`
+```
 
 ---
 
@@ -782,9 +782,9 @@ sudo systemctl status mongod
 
 1. Verifica que MongoDB esté corriendo
 2. Reinicializa la base de datos:
-   \`\`\`
+   ```
    http://localhost:3000/api/init-db
-   \`\`\`
+   ```
 3. Verifica en MongoDB Compass que existan documentos en `students` y `teachers`
 4. Usa las credenciales exactas proporcionadas en este manual
 
@@ -819,11 +819,11 @@ sudo systemctl status mongod
 
 **Solución:**
 
-\`\`\`bash
+```bash
 # Reinstalar dependencias de PDF
 npm install jspdf jspdf-autotable
 npm run dev
-\`\`\`
+```
 
 ---
 
@@ -839,12 +839,12 @@ npm run dev
 1. **Optimizar MongoDB:**
    - Crear índices en campos frecuentes:
    
-\`\`\`javascript
+```javascript
 // En MongoDB shell o Compass
 db.students.createIndex({ "tarjetaIdentidad": 1 })
 db.teachers.createIndex({ "cedula": 1 })
 db.workshops.createIndex({ "grado": 1 })
-\`\`\`
+```
 
 2. **Limpiar caché del navegador:**
    - Chrome: Ctrl+Shift+Delete → Limpiar datos de navegación
@@ -859,12 +859,12 @@ db.workshops.createIndex({ "grado": 1 })
 
 **Solución:**
 
-\`\`\`bash
+```bash
 # Detener el servidor (Ctrl+C)
 # Limpiar caché de Next.js
 rm -rf .next
 npm run dev
-\`\`\`
+```
 
 ---
 
@@ -917,7 +917,7 @@ Para desarrolladores que deseen contribuir o modificar el código:
 
 ### Anexo A: Estructura de Carpetas del Proyecto
 
-\`\`\`
+```
 LectoRutaSaber/
 ├── app/                          # Aplicación Next.js
 │   ├── api/                      # Endpoints de API
@@ -941,12 +941,13 @@ LectoRutaSaber/
 ├── public/                       # Archivos estáticos
 │   ├── audio/                    # Archivos de audio
 │   └── images/                   # Imágenes
-├── scripts/                      # Scripts auxiliares
+├── jmeter/                       # Pruebas de software (Apache JMeter)
+├── docs/                         # Documentación (este manual está en docs/05-manuales/)
 ├── .env.local                    # Variables de entorno
 ├── package.json                  # Dependencias
 ├── tsconfig.json                 # Configuración TypeScript
-└── MANUAL_USUARIO.md             # Este archivo
-\`\`\`
+└── README.md                     # Presentación del proyecto
+```
 
 ### Anexo B: Credenciales de Prueba Completas
 
@@ -972,7 +973,7 @@ Campo	Descripción
 Nombre	Nombre del estudiante
 Apellido	Apellido del estudiante
 Grado	Seleccionar 10° u 11° (dropdown)
-Tarjeta de Identidad	Número único (ej. 1098765432)
+Tarjeta de Identidad	Número único (ej. 1000000000)
 Contraseña	Se recomienda usar la tarjeta de identidad
 Email	Correo electrónico
 Teléfono	Número de contacto (10 dígitos)
